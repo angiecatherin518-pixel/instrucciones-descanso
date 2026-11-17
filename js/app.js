@@ -59,22 +59,26 @@ const nombresRituales = {
     ruido: "Reproducción de ruido blanco"
 };
 
+
 function iniciarRitual(cama) {
     const ritual = cama.dataset.ritual;
 
-    // Evita activar varias veces la misma cama
     if (cama.classList.contains("deslizada")) return;
 
     cama.classList.add("deslizada");
 
+    if (ritual === "ovejas") {
+        pantallaHabitacion.classList.remove("activa");
+        document.getElementById("ritual-ovejas").classList.add("activa");
+
+        reiniciarOvejas();
+        return;
+    }
+
     mensajeRitual.textContent =
-        "Has elegido: " + nombresRituales[ritual] + ". ¡Vamos a comenzar!";
-
-    console.log("Ritual seleccionado:", ritual);
-
-    // Guardamos el ritual para desarrollarlo en el siguiente paso
-    sessionStorage.setItem("ritualSeleccionado", ritual);
+        "Este ritual estará disponible próximamente.";
 }
+
 
 camas.forEach((cama) => {
     cama.addEventListener("pointerdown", (evento) => {
@@ -100,3 +104,72 @@ camas.forEach((cama) => {
     });
 });
 
+
+/* =================================
+   INTERACCIÓN: CONTAR OVEJAS
+================================= */
+
+let ovejasContadas = 0;
+
+const oveja = document.getElementById("oveja");
+const numeroOvejas = document.getElementById("numero-ovejas");
+const botonSaltar = document.getElementById("saltar-oveja");
+const instruccionOvejas = document.getElementById("instruccion-ovejas");
+const finalOvejas = document.getElementById("final-ovejas");
+
+function reiniciarOvejas() {
+    ovejasContadas = 0;
+
+    numeroOvejas.textContent = "0";
+    instruccionOvejas.textContent =
+        "Toca la pantalla para ayudar a la oveja a saltar.";
+
+    botonSaltar.style.display = "inline-block";
+    finalOvejas.classList.remove("visible");
+
+    oveja.classList.remove("saltando");
+    oveja.style.left = "8%";
+}
+
+function hacerSaltarOveja() {
+    if (ovejasContadas >= 50) return;
+
+    ovejasContadas++;
+
+    numeroOvejas.textContent = ovejasContadas;
+
+    // Reiniciar la animación para permitir el siguiente salto
+    oveja.classList.remove("saltando");
+    void oveja.offsetWidth;
+    oveja.classList.add("saltando");
+
+    if (ovejasContadas === 50) {
+        instruccionOvejas.textContent =
+            "Has ayudado a saltar a las 50 ovejas.";
+
+        setTimeout(() => {
+            botonSaltar.style.display = "none";
+            finalOvejas.classList.add("visible");
+        }, 750);
+    }
+}
+
+botonSaltar.addEventListener("click", hacerSaltarOveja);
+
+// También se puede tocar el paisaje para hacer saltar la oveja
+document.querySelector(".paisaje-ovejas").addEventListener(
+    "click",
+    hacerSaltarOveja
+);
+
+// Regresar a la habitación
+document.getElementById("volver-habitacion").addEventListener("click", () => {
+    document.getElementById("ritual-ovejas").classList.remove("activa");
+    pantallaHabitacion.classList.add("activa");
+});
+
+// Continuar después de contar las ovejas
+document.getElementById("continuar-ovejas").addEventListener("click", () => {
+    document.getElementById("ritual-ovejas").classList.remove("activa");
+    pantallaHabitacion.classList.add("activa");
+});

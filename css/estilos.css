@@ -499,3 +499,256 @@ body {
     }
 }
 
+
+/* =================================
+   ESCENA 3: CONTAR OVEJAS
+================================= */
+
+#ritual-ovejas {
+    position: relative;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    text-align: center;
+    padding: 30px 18px;
+
+    background:
+        radial-gradient(ellipse at 50% 20%, #34466c, transparent 65%),
+        linear-gradient(180deg, #101a35, #080d1b);
+}
+
+.encabezado-ritual {
+    width: 100%;
+}
+
+.etiqueta-ritual {
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #b5a990;
+    margin-bottom: 12px;
+}
+
+.encabezado-ritual h1 {
+    font-size: 30px;
+    font-weight: normal;
+    margin-bottom: 10px;
+}
+
+.encabezado-ritual p:last-child {
+    font-size: 13px;
+    color: #c8c5d5;
+    line-height: 1.5;
+}
+
+.paisaje-ovejas {
+    position: relative;
+    width: 100%;
+    max-width: 430px;
+    height: 290px;
+    flex-shrink: 0;
+    overflow: hidden;
+    border-radius: 18px;
+
+    background: linear-gradient(
+        180deg,
+        #19294b 0%,
+        #36496b 75%,
+        #405344 100%
+    );
+}
+
+.luna-ovejas {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #f7e8bc;
+    font-size: 45px;
+}
+
+.estrellas-ovejas {
+    position: absolute;
+    top: 35px;
+    left: 20px;
+    color: #f7e8bc;
+    font-size: 18px;
+}
+
+.nube {
+    position: absolute;
+    color: #aab5c9;
+    opacity: 0.45;
+    font-size: 38px;
+}
+
+.nube-una {
+    top: 85px;
+    left: 35px;
+}
+
+.nube-dos {
+    top: 115px;
+    right: 35px;
+}
+
+.cerca {
+    position: absolute;
+    bottom: 80px;
+    left: 5%;
+    width: 90%;
+    height: 90px;
+}
+
+.tabla {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 12px;
+    background: #a98b6c;
+    border: 2px solid #785d48;
+    border-radius: 4px;
+}
+
+.tabla-uno {
+    top: 25px;
+}
+
+.tabla-dos {
+    top: 65px;
+}
+
+.poste {
+    position: absolute;
+    top: 10px;
+    height: 90px;
+    width: 12px;
+    background: #a98b6c;
+    border: 2px solid #785d48;
+    border-radius: 4px;
+}
+
+.poste-uno {
+    left: 10%;
+}
+
+.poste-dos {
+    left: 50%;
+}
+
+.poste-tres {
+    right: 10%;
+}
+
+.oveja {
+    position: absolute;
+    z-index: 2;
+    bottom: 85px;
+    left: 8%;
+    font-size: 48px;
+    transform: translateY(0) scaleX(-1);
+}
+
+.oveja.saltando {
+    animation: salto-oveja 0.7s ease-in-out;
+}
+
+@keyframes salto-oveja {
+    0% {
+        transform: translate(0, 0) scaleX(-1);
+    }
+
+    45% {
+        transform: translate(95px, -100px) scaleX(-1) rotate(-10deg);
+    }
+
+    75% {
+        transform: translate(170px, 0) scaleX(-1);
+    }
+
+    100% {
+        transform: translate(170px, 0) scaleX(-1);
+    }
+}
+
+.suelo {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 55px;
+    background: #344a3a;
+    border-radius: 50% 50% 0 0;
+}
+
+.contador-ovejas {
+    font-family: Arial, sans-serif;
+    color: #d5cfe5;
+}
+
+.contador-ovejas p {
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+#numero-ovejas {
+    font-family: Georgia, serif;
+    font-size: 36px;
+    color: #f7e8bc;
+}
+
+.contador-total {
+    font-size: 16px;
+    color: #aaa9b5;
+}
+
+.instruccion-ovejas {
+    color: #c8c5d5;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.boton-ovejas,
+#continuar-ovejas {
+    border: 1px solid #a9a0b9;
+    border-radius: 30px;
+    padding: 15px 28px;
+    min-height: 48px;
+    background: #34466c;
+    color: #fff;
+    font-size: 13px;
+}
+
+.boton-volver {
+    border: none;
+    background: transparent;
+    color: #aaa9b5;
+    padding: 10px;
+    font-size: 12px;
+}
+
+.final-ovejas {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    color: #f7e8bc;
+    line-height: 1.5;
+}
+
+.final-ovejas.visible {
+    display: flex;
+}
+
+@media (max-height: 700px) {
+    .paisaje-ovejas {
+        height: 240px;
+    }
+
+    #ritual-ovejas {
+        gap: 10px;
+        padding-top: 18px;
+        padding-bottom: 18px;
+    }
+}
+
