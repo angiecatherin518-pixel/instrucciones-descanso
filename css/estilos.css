@@ -795,7 +795,8 @@ body {
     align-items: center;
     position: relative;
     overflow: hidden;
-    touch-action: pan-y;
+    touch-action: none;
+    overscroll-behavior: contain;
 }
 
 .aura-respiracion {

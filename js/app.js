@@ -298,21 +298,36 @@ botonInhalar.addEventListener("click", comenzarInhalacion);
 // Botón para exhalar
 botonExhalar.addEventListener("click", completarExhalacion);
 
-// Gesto de deslizar hacia abajo
+
+// GESTO DE DESLIZAR HACIA ABAJO
+
 const zonaRespiracion = document.getElementById("zona-respiracion");
 
+let posicionInicialY = 0;
+
 zonaRespiracion.addEventListener("pointerdown", (evento) => {
-    inicioGestoRespiracion = evento.clientY;
+    evento.preventDefault();
+
+    posicionInicialY = evento.clientY;
+
+    zonaRespiracion.setPointerCapture(evento.pointerId);
 });
 
 zonaRespiracion.addEventListener("pointerup", (evento) => {
-    const distancia =
-        evento.clientY - inicioGestoRespiracion;
+    evento.preventDefault();
+
+    const posicionFinalY = evento.clientY;
+    const distancia = posicionFinalY - posicionInicialY;
 
     if (distancia > 35) {
         comenzarInhalacion();
     }
 });
+
+zonaRespiracion.addEventListener("pointercancel", () => {
+    posicionInicialY = 0;
+});
+
 
 // Regresar a la habitación
 document.getElementById("volver-respiracion").addEventListener("click", () => {
