@@ -45,23 +45,6 @@ botonContinuar.addEventListener("click", () => {
 
 });
 
-// SELECCIÓN DE RITUALES
-
-const camas = document.querySelectorAll(".cama");
-
-camas.forEach((cama) => {
-
-    cama.addEventListener("click", () => {
-
-        const ritual = cama.dataset.ritual;
-
-        console.log("Ritual seleccionado:", ritual);
-
-    });
-
-});
-
-
 // SELECCIÓN DE LAS CAMAS Y DESLIZAMIENTO DE COBIJAS
 
 const camas = document.querySelectorAll(".cama");
