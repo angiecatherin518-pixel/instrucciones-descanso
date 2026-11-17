@@ -752,3 +752,193 @@ body {
     }
 }
 
+
+/* =================================
+   ESCENA 4: RESPIRACIÓN CONSCIENTE
+================================= */
+
+#ritual-respiracion {
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    text-align: center;
+    padding: 30px 18px;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            #293c65 0%,
+            #121d39 55%,
+            #080d1b 100%
+        );
+}
+
+#ritual-respiracion .encabezado-ritual h1 {
+    font-size: 30px;
+    font-weight: normal;
+}
+
+#ritual-respiracion .encabezado-ritual p:last-child {
+    color: #c8c5d5;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.zona-respiracion {
+    width: 100%;
+    max-width: 400px;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    touch-action: pan-y;
+}
+
+.aura-respiracion {
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    border-radius: 50%;
+    background: #9b9ce8;
+    opacity: 0.10;
+    filter: blur(35px);
+    pointer-events: none;
+}
+
+.esfera-respiracion {
+    width: 155px;
+    height: 155px;
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: radial-gradient(
+        circle at 35% 30%,
+        #e3dfff,
+        #9c9fe2 45%,
+        #6579b7 100%
+    );
+
+    box-shadow:
+        0 0 30px #a5a5ff55,
+        0 0 75px #8b91e044;
+
+    transition:
+        transform 4s ease-in-out,
+        box-shadow 4s ease-in-out;
+
+    z-index: 1;
+}
+
+.esfera-respiracion span {
+    color: #202c50;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 3px;
+}
+
+.esfera-respiracion.inhalando {
+    transform: scale(1.35);
+    box-shadow:
+        0 0 45px #c4c3ff99,
+        0 0 100px #a4a5ff66;
+}
+
+.esfera-respiracion.exhalando {
+    transform: scale(0.75);
+    box-shadow:
+        0 0 20px #a4a5ff44,
+        0 0 45px #8c91df33;
+}
+
+.indicacion-gesto {
+    position: relative;
+    z-index: 2;
+    margin-top: 35px;
+    color: #d5cfe5;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.progreso-respiracion {
+    font-family: Arial, sans-serif;
+    color: #d5cfe5;
+}
+
+.progreso-respiracion p {
+    font-size: 10px;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+#numero-respiraciones {
+    font-family: Georgia, serif;
+    font-size: 36px;
+    color: #f7e8bc;
+}
+
+.mensaje-respiracion {
+    color: #c8c5d5;
+    font-size: 13px;
+    line-height: 1.5;
+    min-height: 20px;
+}
+
+.controles-respiracion {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.boton-respiracion,
+#continuar-respiracion {
+    border: 1px solid #aaa5d0;
+    border-radius: 30px;
+    padding: 15px 30px;
+    min-height: 48px;
+    background: #455681;
+    color: white;
+    font-size: 13px;
+}
+
+.boton-respiracion[hidden] {
+    display: none;
+}
+
+.final-respiracion {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    color: #f7e8bc;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.final-respiracion.visible {
+    display: flex;
+}
+
+@media (max-height: 700px) {
+    #ritual-respiracion {
+        gap: 8px;
+        padding-top: 18px;
+        padding-bottom: 18px;
+    }
+
+    .zona-respiracion {
+        min-height: 230px;
+    }
+
+    .esfera-respiracion {
+        width: 130px;
+        height: 130px;
+    }
+}
+
