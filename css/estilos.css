@@ -891,26 +891,7 @@ body {
     min-height: 20px;
 }
 
-.controles-respiracion {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-}
 
-.boton-respiracion,
-#continuar-respiracion {
-    border: 1px solid #aaa5d0;
-    border-radius: 30px;
-    padding: 15px 30px;
-    min-height: 48px;
-    background: #455681;
-    color: white;
-    font-size: 13px;
-}
-
-.boton-respiracion[hidden] {
-    display: none;
-}
 
 .final-respiracion {
     display: none;
@@ -966,21 +947,3 @@ body {
     font-size: 22px;
 }
 
-.boton-respiracion {
-    cursor: pointer;
-}
-
-.boton-secundario {
-    background: transparent;
-    border-color: #777c9d;
-    color: #d5cfe5;
-    margin-left: 8px;
-}
-
-#boton-microfono {
-    background: #6579b7;
-}
-
-#boton-microfono:disabled {
-    opacity: 0.6;
-}

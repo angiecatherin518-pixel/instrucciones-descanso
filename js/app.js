@@ -77,12 +77,14 @@ function iniciarRitual(cama) {
     }
 
     if (ritual === "respiracion") {
-        pantallaHabitacion.classList.remove("activa");
-        document.getElementById("ritual-respiracion").classList.add("activa");
+    pantallaHabitacion.classList.remove("activa");
+    document.getElementById("ritual-respiracion").classList.add("activa");
 
-        reiniciarRespiracion();
-        return;
-    }
+    reiniciarRespiracion();
+    prepararMicrofono();
+
+    return;
+}
 
     mensajeRitual.textContent =
         "Este ritual estará disponible próximamente.";
@@ -191,20 +193,23 @@ document.getElementById("continuar-ovejas").addEventListener("click", () => {
 
 /* =================================
    INTERACCIÓN: RESPIRACIÓN
+   MICRÓFONO AUTOMÁTICO
 ================================= */
 
 let respiracionesCompletadas = 0;
 let faseRespiracion = "lista";
 
 let posicionInicialY = 0;
-let temporizadorRespiracion = null;
 let intervaloCuenta = null;
 let progresoInhalacion = 0;
 
-let microfonoActivo = false;
 let flujoMicrofono = null;
 let contextoAudio = null;
+let analizadorMicrofono = null;
 let animacionMicrofono = null;
+
+let microfonoListo = false;
+let soplidoDetectado = false;
 let momentoSoplido = null;
 
 const zonaRespiracion = document.getElementById("zona-respiracion");
@@ -216,11 +221,66 @@ const indicacionGesto = document.getElementById("indicacion-gesto");
 const mensajeRespiracion = document.getElementById("mensaje-respiracion");
 const cuentaRegresiva = document.getElementById("cuenta-regresiva");
 
-const botonInhalar = document.getElementById("boton-inhalar");
-const botonMicrofono = document.getElementById("boton-microfono");
-const botonExhalar = document.getElementById("boton-exhalar");
-
 const finalRespiracion = document.getElementById("final-respiracion");
+
+
+// PREPARAR EL MICRÓFONO AL ENTRAR
+
+async function prepararMicrofono() {
+    microfonoListo = false;
+
+    if (!navigator.mediaDevices ||
+        !navigator.mediaDevices.getUserMedia) {
+
+        mensajeRespiracion.textContent =
+            "Necesitamos acceso al micrófono. Abre la experiencia desde una conexión segura HTTPS.";
+
+        return;
+    }
+
+    try {
+        mensajeRespiracion.textContent =
+            "Preparando el micrófono...";
+
+        flujoMicrofono = await navigator.mediaDevices.getUserMedia({
+            audio: true
+        });
+
+        const AudioContextClass =
+            window.AudioContext || window.webkitAudioContext;
+
+        if (!AudioContextClass) {
+            throw new Error("Audio no disponible");
+        }
+
+        contextoAudio = new AudioContextClass();
+
+        await contextoAudio.resume();
+
+        const fuente =
+            contextoAudio.createMediaStreamSource(flujoMicrofono);
+
+        analizadorMicrofono = contextoAudio.createAnalyser();
+
+        analizadorMicrofono.fftSize = 1024;
+
+        fuente.connect(analizadorMicrofono);
+
+        microfonoListo = true;
+
+        mensajeRespiracion.textContent =
+            "El micrófono está listo. Puedes comenzar.";
+
+        indicacionGesto.textContent =
+            "Desliza tu dedo hacia abajo para inhalar.";
+
+    } catch (error) {
+        detenerMicrofono();
+
+        mensajeRespiracion.textContent =
+            "No pudimos acceder al micrófono. Revisa los permisos del navegador y vuelve a entrar al ritual.";
+    }
+}
 
 
 // REINICIAR EL RITUAL
@@ -228,12 +288,10 @@ const finalRespiracion = document.getElementById("final-respiracion");
 function reiniciarRespiracion() {
     detenerMicrofono();
 
-    clearTimeout(temporizadorRespiracion);
-    clearInterval(intervaloCuenta);
-
     respiracionesCompletadas = 0;
     faseRespiracion = "lista";
     progresoInhalacion = 0;
+    soplidoDetectado = false;
 
     numeroRespiraciones.textContent = "0";
 
@@ -244,13 +302,9 @@ function reiniciarRespiracion() {
         "Desliza tu dedo hacia abajo para inhalar";
 
     mensajeRespiracion.textContent =
-        "Prepárate. No hay prisa.";
+        "Preparando el micrófono...";
 
     cuentaRegresiva.textContent = "";
-
-    botonInhalar.hidden = true;
-    botonMicrofono.hidden = true;
-    botonExhalar.hidden = true;
 
     finalRespiracion.classList.remove("visible");
 }
@@ -259,7 +313,7 @@ function reiniciarRespiracion() {
 // COMENZAR A INHALAR
 
 function comenzarInhalacion() {
-    if (faseRespiracion !== "lista") return;
+    if (!microfonoListo || faseRespiracion !== "lista") return;
 
     faseRespiracion = "inhalando";
 
@@ -276,7 +330,7 @@ function comenzarInhalacion() {
 }
 
 
-// DETECTAR CUANDO EL DEDO LLEGA ABAJO
+// LLEGAR AL FINAL DE LA INHALACIÓN
 
 function comenzarRetencion() {
     if (faseRespiracion !== "inhalando") return;
@@ -286,10 +340,10 @@ function comenzarRetencion() {
     textoRespiracion.textContent = "MANTÉN";
 
     indicacionGesto.textContent =
-        "Mantén tu dedo aquí durante cuatro segundos";
+        "Mantén tu dedo abajo";
 
     mensajeRespiracion.textContent =
-        "Quédate en este momento.";
+        "Quédate aquí durante cuatro segundos.";
 
     let segundos = 4;
 
@@ -300,53 +354,102 @@ function comenzarRetencion() {
 
         if (segundos > 0) {
             cuentaRegresiva.textContent = segundos;
+
         } else {
             clearInterval(intervaloCuenta);
+
             cuentaRegresiva.textContent = "";
 
-            faseRespiracion = "lista-para-soltar";
+            faseRespiracion = "exhalando";
 
-            textoRespiracion.textContent = "SUELTA";
+            textoRespiracion.textContent = "EXHALA";
 
             indicacionGesto.textContent =
-                "Ya puedes levantar tu dedo";
+                "Sin levantar el dedo, sopla hacia el micrófono";
 
             mensajeRespiracion.textContent =
-                "Ahora deja salir el aire suavemente.";
+                "Estamos escuchando tu respiración...";
+
+            iniciarDeteccionSoplido();
         }
 
     }, 1000);
 }
 
 
-// CUANDO LA PERSONA SUELTA EL DEDO
+// ESCUCHAR EL SOPLIDO
 
-function prepararExhalacion() {
-    if (faseRespiracion !== "lista-para-soltar") return;
+function iniciarDeteccionSoplido() {
+    if (!analizadorMicrofono || !microfonoListo) return;
 
-    faseRespiracion = "exhalando";
+    const datos = new Float32Array(
+        analizadorMicrofono.fftSize
+    );
 
-    textoRespiracion.textContent = "EXHALA";
+    momentoSoplido = null;
 
-    indicacionGesto.textContent =
-        "Sopla suavemente hacia el micrófono";
+    function escuchar() {
+        if (faseRespiracion !== "exhalando") return;
 
-    mensajeRespiracion.textContent =
-        "Deja salir el aire poco a poco.";
+        analizadorMicrofono.getFloatTimeDomainData(datos);
 
-    esferaRespiracion.style.transform = "scale(0.75)";
+        let suma = 0;
 
-    botonMicrofono.hidden = false;
-    botonExhalar.hidden = false;
+        for (let i = 0; i < datos.length; i++) {
+            suma += datos[i] * datos[i];
+        }
+
+        const volumen = Math.sqrt(suma / datos.length);
+
+        // Detectar un soplido sostenido
+        if (volumen > 0.07) {
+
+            if (momentoSoplido === null) {
+                momentoSoplido = Date.now();
+            }
+
+            if (Date.now() - momentoSoplido >= 450) {
+
+                soplidoDetectado = true;
+
+                textoRespiracion.textContent = "LISTO";
+
+                indicacionGesto.textContent =
+                    "Ahora puedes soltar tu dedo";
+
+                mensajeRespiracion.textContent =
+                    "Muy bien. Suelta para continuar.";
+
+                cancelAnimationFrame(animacionMicrofono);
+
+                return;
+            }
+
+        } else {
+            momentoSoplido = null;
+        }
+
+        animacionMicrofono =
+            requestAnimationFrame(escuchar);
+    }
+
+    escuchar();
 }
 
 
-// MOVIMIENTO DEL DEDO: INHALACIÓN PROGRESIVA
+// MOVIMIENTO DEL DEDO
 
 zonaRespiracion.addEventListener("pointerdown", (evento) => {
     evento.preventDefault();
 
     if (faseRespiracion !== "lista") return;
+
+    if (!microfonoListo) {
+        mensajeRespiracion.textContent =
+            "Primero necesitamos activar el micrófono.";
+
+        return;
+    }
 
     zonaRespiracion.setPointerCapture(evento.pointerId);
 
@@ -354,6 +457,7 @@ zonaRespiracion.addEventListener("pointerdown", (evento) => {
 
     comenzarInhalacion();
 });
+
 
 zonaRespiracion.addEventListener("pointermove", (evento) => {
     evento.preventDefault();
@@ -375,7 +479,7 @@ zonaRespiracion.addEventListener("pointermove", (evento) => {
         Math.min(1, distanciaRecorrida / distanciaDisponible)
     );
 
-    // La esfera crece mientras el dedo baja
+    // La esfera crece mientras arrastras el dedo
     const escala = 0.75 + (progresoInhalacion * 0.60);
 
     esferaRespiracion.style.transform =
@@ -386,201 +490,92 @@ zonaRespiracion.addEventListener("pointermove", (evento) => {
     }
 });
 
+
+// SOLTAR EL DEDO
+
 zonaRespiracion.addEventListener("pointerup", (evento) => {
     evento.preventDefault();
 
-    if (faseRespiracion === "lista-para-soltar") {
-        prepararExhalacion();
+    if (faseRespiracion === "exhalando" && soplidoDetectado) {
+        completarRespiracion();
+        return;
+    }
 
-    } else if (
+    if (
         faseRespiracion === "inhalando" ||
-        faseRespiracion === "manteniendo"
+        faseRespiracion === "manteniendo" ||
+        faseRespiracion === "exhalando"
     ) {
-        // Si suelta antes de completar los cuatro segundos,
-        // vuelve a intentarlo.
-
-        clearInterval(intervaloCuenta);
-
-        faseRespiracion = "lista";
-        progresoInhalacion = 0;
-
-        esferaRespiracion.style.transform = "scale(0.75)";
-        textoRespiracion.textContent = "INHALA";
-
-        cuentaRegresiva.textContent = "";
-
-        indicacionGesto.textContent =
-            "Inténtalo de nuevo y mantén tu dedo abajo";
-
-        mensajeRespiracion.textContent =
-            "No hay prisa.";
+        cancelarRespiracion();
     }
 });
 
 zonaRespiracion.addEventListener("pointercancel", () => {
     if (
         faseRespiracion === "inhalando" ||
-        faseRespiracion === "manteniendo"
+        faseRespiracion === "manteniendo" ||
+        faseRespiracion === "exhalando"
     ) {
-        clearInterval(intervaloCuenta);
-
-        faseRespiracion = "lista";
-        progresoInhalacion = 0;
-
-        esferaRespiracion.style.transform = "scale(0.75)";
-        cuentaRegresiva.textContent = "";
-        textoRespiracion.textContent = "INHALA";
+        cancelarRespiracion();
     }
 });
 
 
-// ACTIVAR EL MICRÓFONO
+// CANCELAR SI SUELTA ANTES DE SOPLAR
 
-async function activarMicrofono() {
-    if (faseRespiracion !== "exhalando" || microfonoActivo) return;
-
-    if (!navigator.mediaDevices ||
-        !navigator.mediaDevices.getUserMedia) {
-
-        mensajeRespiracion.textContent =
-            "Tu navegador no permite utilizar el micrófono aquí. Puedes usar el botón alternativo.";
-
-        return;
-    }
-
-    try {
-        botonMicrofono.disabled = true;
-
-        mensajeRespiracion.textContent =
-            "Solicitando permiso para utilizar el micrófono...";
-
-        flujoMicrofono = await navigator.mediaDevices.getUserMedia({
-            audio: true
-        });
-
-        const AudioContextClass =
-            window.AudioContext || window.webkitAudioContext;
-
-        if (!AudioContextClass) {
-            throw new Error("Audio no disponible");
-        }
-
-        contextoAudio = new AudioContextClass();
-
-        await contextoAudio.resume();
-
-        const fuente =
-            contextoAudio.createMediaStreamSource(flujoMicrofono);
-
-        const analizador = contextoAudio.createAnalyser();
-
-        analizador.fftSize = 1024;
-
-        fuente.connect(analizador);
-
-        const datos = new Float32Array(analizador.fftSize);
-
-        microfonoActivo = true;
-        momentoSoplido = null;
-
-        mensajeRespiracion.textContent =
-            "Ahora sopla suavemente hacia el micrófono.";
-
-        botonMicrofono.textContent = "Sopla suavemente...";
-
-        function detectarSoplido() {
-            if (!microfonoActivo) return;
-
-            analizador.getFloatTimeDomainData(datos);
-
-            let suma = 0;
-
-            for (let i = 0; i < datos.length; i++) {
-                suma += datos[i] * datos[i];
-            }
-
-            const volumen = Math.sqrt(suma / datos.length);
-
-            // Detecta un sonido sostenido de cierta intensidad.
-            if (volumen > 0.10) {
-                if (momentoSoplido === null) {
-                    momentoSoplido = Date.now();
-                }
-
-                if (Date.now() - momentoSoplido > 300) {
-                    completarExhalacion();
-                    return;
-                }
-
-            } else {
-                momentoSoplido = null;
-            }
-
-            animacionMicrofono =
-                requestAnimationFrame(detectarSoplido);
-        }
-
-        detectarSoplido();
-
-    } catch (error) {
-        detenerMicrofono();
-
-        botonMicrofono.disabled = false;
-
-        mensajeRespiracion.textContent =
-            "No pudimos acceder al micrófono. Puedes exhalar con el botón alternativo.";
-    }
-}
-
-
-// DETENER EL MICRÓFONO
-
-function detenerMicrofono() {
-    microfonoActivo = false;
+function cancelarRespiracion() {
+    clearInterval(intervaloCuenta);
 
     if (animacionMicrofono !== null) {
         cancelAnimationFrame(animacionMicrofono);
         animacionMicrofono = null;
     }
 
-    if (flujoMicrofono) {
-        flujoMicrofono.getTracks().forEach((pista) => {
-            pista.stop();
-        });
+    faseRespiracion = "lista";
+    progresoInhalacion = 0;
+    soplidoDetectado = false;
 
-        flujoMicrofono = null;
-    }
+    esferaRespiracion.style.transform = "scale(0.75)";
 
-    if (contextoAudio) {
-        contextoAudio.close();
-        contextoAudio = null;
-    }
+    textoRespiracion.textContent = "INHALA";
 
-    botonMicrofono.disabled = false;
-    botonMicrofono.textContent = "🎙 Soplar para exhalar";
+    cuentaRegresiva.textContent = "";
+
+    indicacionGesto.textContent =
+        "Desliza hacia abajo para intentarlo otra vez";
+
+    mensajeRespiracion.textContent =
+        "Primero inhala, mantén y después sopla antes de soltar.";
 }
 
 
-// COMPLETAR UNA EXHALACIÓN
+// COMPLETAR UNA RESPIRACIÓN
 
-function completarExhalacion() {
-    if (faseRespiracion !== "exhalando") return;
+function completarRespiracion() {
+    if (
+        faseRespiracion !== "exhalando" ||
+        !soplidoDetectado
+    ) return;
 
-    detenerMicrofono();
+    if (animacionMicrofono !== null) {
+        cancelAnimationFrame(animacionMicrofono);
+        animacionMicrofono = null;
+    }
 
     respiracionesCompletadas++;
 
-    numeroRespiraciones.textContent = respiracionesCompletadas;
+    numeroRespiraciones.textContent =
+        respiracionesCompletadas;
 
-    botonMicrofono.hidden = true;
-    botonExhalar.hidden = true;
+    soplidoDetectado = false;
 
     if (respiracionesCompletadas >= 4) {
         faseRespiracion = "terminada";
 
         textoRespiracion.textContent = "DESCANSA";
 
-        indicacionGesto.textContent = "Has terminado.";
+        indicacionGesto.textContent =
+            "Has terminado.";
 
         mensajeRespiracion.textContent =
             "No tienes que controlar nada más.";
@@ -605,22 +600,38 @@ function completarExhalacion() {
 }
 
 
-// BOTONES
+// DETENER EL MICRÓFONO
 
-botonInhalar.addEventListener("click", comenzarInhalacion);
+function detenerMicrofono() {
+    if (animacionMicrofono !== null) {
+        cancelAnimationFrame(animacionMicrofono);
+        animacionMicrofono = null;
+    }
 
-botonMicrofono.addEventListener("click", activarMicrofono);
+    if (flujoMicrofono) {
+        flujoMicrofono.getTracks().forEach((pista) => {
+            pista.stop();
+        });
 
-botonExhalar.addEventListener("click", completarExhalacion);
+        flujoMicrofono = null;
+    }
+
+    if (contextoAudio) {
+        contextoAudio.close();
+        contextoAudio = null;
+    }
+
+    analizadorMicrofono = null;
+    microfonoListo = false;
+}
 
 
-// VOLVER A LA HABITACIÓN
+// SALIR DEL RITUAL
 
 function salirDeRespiracion() {
-    detenerMicrofono();
-
     clearInterval(intervaloCuenta);
-    clearTimeout(temporizadorRespiracion);
+
+    detenerMicrofono();
 
     document.getElementById("ritual-respiracion")
         .classList.remove("activa");
