@@ -38,54 +38,58 @@
         </section>
 
         <!-- SEGUNDA ESCENA -->
-        <section id="habitacion" class="pantalla">
+       
+<section id="habitacion" class="pantalla">
+    <div class="encabezado-habitacion">
+        <p class="hora">02:47 AM</p>
+        <h1>Elige dónde descansar</h1>
+        <p>Desliza la cobija hacia abajo para comenzar.</p>
+    </div>
 
-            <div class="contenido-habitacion">
+    <div class="habitacion">
+        <div class="ventana">
+            <span>☾</span>
+            <span>✦　　·　　✧</span>
+        </div>
 
-                <p class="etiqueta">INSTRUCCIONES PARA DESCANSAR</p>
+        <div class="camas">
+            <button class="cama" data-ritual="ovejas">
+                <span class="nombre-cama">Contar ovejas</span>
+                <span class="ilustracion-cama">🐑</span>
+                <span class="cobija">Desliza ↓</span>
+            </button>
 
-                <h1>Es hora de dormir.</h1>
+            <button class="cama" data-ritual="respiracion">
+                <span class="nombre-cama">Respirar</span>
+                <span class="ilustracion-cama">☁️</span>
+                <span class="cobija">Desliza ↓</span>
+            </button>
 
-                <p class="descripcion">
-                    Tienes cuatro rituales para intentar conciliar el sueño.
-                    Elige por dónde quieres empezar.
-                </p>
+            <button class="cama" data-ritual="colores">
+                <span class="nombre-cama">Repetir colores</span>
+                <span class="ilustracion-cama">🎨</span>
+                <span class="cobija">Desliza ↓</span>
+            </button>
 
-                <div class="camas">
+            <button class="cama" data-ritual="ruido">
+                <span class="nombre-cama">Ruido blanco</span>
+                <span class="ilustracion-cama">📻</span>
+                <span class="cobija">Desliza ↓</span>
+            </button>
+        </div>
 
-                    <button class="cama" data-ritual="ovejas">
-                        <span>🐑</span>
-                        <strong>Contar ovejas</strong>
-                        <small>01</small>
-                    </button>
+        <div class="decoracion">
+            <span>✧</span>
+            <span>☾</span>
+            <span>✦</span>
+            <span>·</span>
+        </div>
+    </div>
 
-                    <button class="cama" data-ritual="respiracion">
-                        <span>🌬️</span>
-                        <strong>Respirar</strong>
-                        <small>02</small>
-                    </button>
-
-                    <button class="cama" data-ritual="colores">
-                        <span>🎨</span>
-                        <strong>Repetir colores</strong>
-                        <small>03</small>
-                    </button>
-
-                    <button class="cama" data-ritual="ruido">
-                        <span>📻</span>
-                        <strong>Ruido blanco</strong>
-                        <small>04</small>
-                    </button>
-
-                </div>
-
-                <p class="progreso" id="progreso">
-                    0 de 4 rituales completados
-                </p>
-
-            </div>
-
-        </section>
+    <p id="mensaje-ritual" class="mensaje-ritual">
+        Puedes elegir cualquiera de las cuatro camas.
+    </p>
+</section>
 
     </main>
 

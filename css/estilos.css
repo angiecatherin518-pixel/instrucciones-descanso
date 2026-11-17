@@ -260,3 +260,194 @@ h1 {
         min-height: 125px;
     }
 }
+
+
+/* HABITACIÓN */
+
+#habitacion {
+    min-height: 100vh;
+    padding: 35px 20px;
+    box-sizing: border-box;
+    background:
+        radial-gradient(ellipse at 50% 20%, #34466c 0%, transparent 55%),
+        linear-gradient(160deg, #111a32, #080d1c 80%);
+    color: #f4eddf;
+    text-align: center;
+}
+
+.encabezado-habitacion {
+    margin-bottom: 25px;
+}
+
+.hora {
+    color: #c0b9d8;
+    letter-spacing: 4px;
+    font-size: 13px;
+}
+
+.encabezado-habitacion h1 {
+    font-family: Georgia, serif;
+    font-weight: normal;
+    font-size: clamp(26px, 5vw, 38px);
+    margin: 12px 0;
+}
+
+.encabezado-habitacion p {
+    color: #c8c5d5;
+    font-size: 14px;
+}
+
+.habitacion {
+    position: relative;
+    max-width: 650px;
+    min-height: 440px;
+    margin: 0 auto;
+    padding: 25px;
+    box-sizing: border-box;
+    border: 2px solid #66708a;
+    border-radius: 18px;
+    background:
+        radial-gradient(circle at 20% 20%, #34415c 0 2px, transparent 3px),
+        radial-gradient(circle at 80% 70%, #34415c 0 2px, transparent 3px),
+        #202c43;
+    box-shadow: 0 15px 45px #0008;
+    overflow: hidden;
+}
+
+.ventana {
+    width: 125px;
+    height: 75px;
+    margin: 0 auto 25px;
+    border: 5px solid #65718d;
+    border-radius: 8px;
+    background: linear-gradient(#17233e, #59678b);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #f9e8b7;
+    font-size: 20px;
+}
+
+.camas {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+    position: relative;
+    z-index: 1;
+}
+
+.cama {
+    position: relative;
+    min-height: 125px;
+    border: 5px solid #a18c82;
+    border-radius: 13px;
+    background: #e7d7c5;
+    color: #283047;
+    padding: 12px;
+    cursor: grab;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    touch-action: pan-y;
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.cama:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px #0006;
+}
+
+.nombre-cama {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.ilustracion-cama {
+    font-size: 32px;
+    padding: 5px;
+}
+
+.cobija {
+    width: 100%;
+    padding: 9px 4px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    background: #8294ad;
+    color: white;
+    font-size: 12px;
+    transition: transform 0.35s ease;
+}
+
+.cama.deslizada .cobija {
+    transform: translateY(100%);
+}
+
+.cama.deslizada {
+    box-shadow: 0 0 18px #d6c6ff88;
+}
+
+.decoracion {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    color: #e9dcb5;
+    font-size: 24px;
+}
+
+.decoracion span {
+    position: absolute;
+}
+
+.decoracion span:nth-child(1) {
+    top: 15px;
+    left: 20px;
+}
+
+.decoracion span:nth-child(2) {
+    top: 120px;
+    right: 20px;
+}
+
+.decoracion span:nth-child(3) {
+    bottom: 20px;
+    left: 25px;
+}
+
+.decoracion span:nth-child(4) {
+    bottom: 80px;
+    right: 30px;
+}
+
+.mensaje-ritual {
+    color: #d5cfe5;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+@media (max-width: 480px) {
+    #habitacion {
+        padding: 25px 12px;
+    }
+
+    .habitacion {
+        padding: 18px 12px;
+        min-height: 400px;
+    }
+
+    .camas {
+        gap: 13px;
+    }
+
+    .cama {
+        min-height: 115px;
+        padding: 8px;
+    }
+
+    .nombre-cama {
+        font-size: 13px;
+    }
+}
