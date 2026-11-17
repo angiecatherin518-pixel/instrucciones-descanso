@@ -943,3 +943,44 @@ body {
     }
 }
 
+
+/* NUEVA INTERACCIÓN DE RESPIRACIÓN */
+
+.zona-respiracion {
+    touch-action: none;
+    overscroll-behavior: contain;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.esfera-respiracion {
+    transform: scale(0.75);
+    transition: transform 0.08s linear, box-shadow 0.3s ease;
+    will-change: transform;
+}
+
+.cuenta-regresiva {
+    min-height: 24px;
+    color: #f7e8bc;
+    font-family: Georgia, serif;
+    font-size: 22px;
+}
+
+.boton-respiracion {
+    cursor: pointer;
+}
+
+.boton-secundario {
+    background: transparent;
+    border-color: #777c9d;
+    color: #d5cfe5;
+    margin-left: 8px;
+}
+
+#boton-microfono {
+    background: #6579b7;
+}
+
+#boton-microfono:disabled {
+    opacity: 0.6;
+}
