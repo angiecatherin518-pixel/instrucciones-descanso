@@ -1,0 +1,262 @@
+
+/* CONFIGURACIÓN GENERAL */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #080d1b;
+    color: #f1eee8;
+    font-family: Georgia, serif;
+    overflow: hidden;
+}
+
+#app {
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+.pantalla {
+    display: none;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 30px 22px;
+}
+
+.pantalla.activa {
+    display: flex;
+}
+
+/* PRIMERA ESCENA */
+
+#inicio {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background:
+        radial-gradient(
+            ellipse at center,
+            #17213b 0%,
+            #080d1b 70%
+        );
+}
+
+.reloj {
+    width: 95px;
+    height: 95px;
+    border: 2px solid #c3b9a6;
+    border-radius: 50%;
+    position: relative;
+    margin-bottom: 20px;
+    animation: temblar 1.5s infinite;
+}
+
+.manecilla {
+    position: absolute;
+    width: 2px;
+    height: 34px;
+    background: #e8d9bd;
+    left: 45px;
+    top: 12px;
+    transform-origin: bottom center;
+    animation: girar 3s linear infinite;
+}
+
+.centro-reloj {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #e8d9bd;
+    position: absolute;
+    left: 42px;
+    top: 42px;
+}
+
+.hora {
+    color: #bcb6ac;
+    font-size: 13px;
+    letter-spacing: 4px;
+    margin-bottom: 65px;
+}
+
+.texto-guia {
+    max-width: 350px;
+    min-height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.texto-guia p {
+    font-size: 23px;
+    line-height: 1.6;
+    animation: aparecer 1s ease;
+}
+
+.boton-continuar {
+    background: none;
+    border: none;
+    color: #aaa9b5;
+    font-size: 12px;
+    letter-spacing: 2px;
+    margin-top: 60px;
+    padding: 15px;
+    cursor: pointer;
+    animation: parpadear 2s infinite;
+}
+
+/* SEGUNDA ESCENA */
+
+#habitacion {
+    justify-content: center;
+    align-items: center;
+    background:
+        radial-gradient(
+            ellipse at top,
+            #263454,
+            #10182b 65%,
+            #080d1b
+        );
+}
+
+.contenido-habitacion {
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.etiqueta {
+    font-family: Arial, sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #b5a990;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 34px;
+    font-weight: normal;
+    margin-bottom: 15px;
+}
+
+.descripcion {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #c4c5ce;
+    margin-bottom: 35px;
+}
+
+.camas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.cama {
+    min-height: 145px;
+    padding: 20px 10px;
+    border: 1px solid #64708a;
+    border-radius: 15px;
+    background: #202c46;
+    color: #f1eee8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+}
+
+.cama:hover {
+    transform: translateY(-5px);
+    background: #344363;
+}
+
+.cama span {
+    font-size: 30px;
+}
+
+.cama strong {
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.cama small {
+    font-family: Arial, sans-serif;
+    color: #b5a990;
+    font-size: 10px;
+}
+
+.progreso {
+    font-family: Arial, sans-serif;
+    font-size: 11px;
+    color: #aaa9b5;
+    margin-top: 28px;
+}
+
+/* ANIMACIONES */
+
+@keyframes girar {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes temblar {
+    0%, 100% {
+        transform: rotate(0deg);
+    }
+
+    25% {
+        transform: rotate(1deg);
+    }
+
+    75% {
+        transform: rotate(-1deg);
+    }
+}
+
+@keyframes aparecer {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes parpadear {
+    0%, 100% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* PANTALLAS PEQUEÑAS */
+
+@media (max-width: 360px) {
+    h1 {
+        font-size: 28px;
+    }
+
+    .cama {
+        min-height: 125px;
+    }
+}

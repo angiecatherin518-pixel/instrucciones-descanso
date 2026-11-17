@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080d1b">
+
+    <title>Instrucciones para descansar</title>
+
+    <link rel="stylesheet" href="css/estilos.css">
+</head>
+
+<body>
+
+    <main id="app">
+
+        <!-- PRIMERA ESCENA -->
+        <section id="inicio" class="pantalla activa">
+
+            <div class="reloj">
+                <div class="manecilla"></div>
+                <div class="centro-reloj"></div>
+            </div>
+
+            <p class="hora">02:47 AM</p>
+
+            <div class="texto-guia">
+                <p id="mensaje">
+                    Mañana tienes una entrevista importante.
+                </p>
+            </div>
+
+            <button id="continuar" class="boton-continuar">
+                Toca para continuar
+            </button>
+
+        </section>
+
+        <!-- SEGUNDA ESCENA -->
+        <section id="habitacion" class="pantalla">
+
+            <div class="contenido-habitacion">
+
+                <p class="etiqueta">INSTRUCCIONES PARA DESCANSAR</p>
+
+                <h1>Es hora de dormir.</h1>
+
+                <p class="descripcion">
+                    Tienes cuatro rituales para intentar conciliar el sueño.
+                    Elige por dónde quieres empezar.
+                </p>
+
+                <div class="camas">
+
+                    <button class="cama" data-ritual="ovejas">
+                        <span>🐑</span>
+                        <strong>Contar ovejas</strong>
+                        <small>01</small>
+                    </button>
+
+                    <button class="cama" data-ritual="respiracion">
+                        <span>🌬️</span>
+                        <strong>Respirar</strong>
+                        <small>02</small>
+                    </button>
+
+                    <button class="cama" data-ritual="colores">
+                        <span>🎨</span>
+                        <strong>Repetir colores</strong>
+                        <small>03</small>
+                    </button>
+
+                    <button class="cama" data-ritual="ruido">
+                        <span>📻</span>
+                        <strong>Ruido blanco</strong>
+                        <small>04</small>
+                    </button>
+
+                </div>
+
+                <p class="progreso" id="progreso">
+                    0 de 4 rituales completados
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="js/app.js"></script>
+
+</body>
+</html>
