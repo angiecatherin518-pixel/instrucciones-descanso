@@ -1243,3 +1243,14 @@ document.getElementById("volver-ruido")
 document.getElementById("continuar-ruido")
     .addEventListener("click", salirDeRuido);
 
+// PRUEBA: COMPROBAR SI CHROME RECIBE LA INCLINACIÓN
+
+window.addEventListener("deviceorientation", function(evento) {
+
+    mensajeRuido.textContent =
+        `Sensor activo | Gamma: ${evento.gamma} | Beta: ${evento.beta}`;
+
+    console.log("Gamma:", evento.gamma);
+    console.log("Beta:", evento.beta);
+
+});
