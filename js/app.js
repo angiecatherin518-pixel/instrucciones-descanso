@@ -1140,20 +1140,23 @@ function cambiarVolumen(porcentaje) {
 
 function cambiarIntensidadPorInclinacion(evento) {
 
+    // Mostrar en pantalla el valor que recibe el sensor.
+    mensajeRuido.textContent =
+        `Inclinación detectada: ${evento.gamma}`;
+
     if (!gananciaRuido) return;
 
-    // Comprobar que el sensor esté enviando datos.
     if (evento.gamma === null || evento.gamma === undefined) {
+        mensajeRuido.textContent =
+            "El sensor no está enviando datos. Usa la barra de intensidad.";
         return;
     }
 
-    // Limitar la inclinación entre -30 y 30 grados.
     const inclinacion = Math.max(
         -30,
         Math.min(30, evento.gamma)
     );
 
-    // Convertir la inclinación en un porcentaje de volumen.
     const porcentaje = ((inclinacion + 30) / 60) * 100;
 
     cambiarVolumen(porcentaje);
