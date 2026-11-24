@@ -188,7 +188,6 @@
         Prepárate. No hay prisa.
     </p>
 
-
 <p id="cuenta-regresiva" class="cuenta-regresiva"></p>
 
 
@@ -207,9 +206,151 @@
 </section>
 
 
+<!-- RITUAL 03: REPETICIÓN DE COLORES -->
+
+<section id="ritual-colores" class="pantalla">
+
+    <div class="encabezado-ritual">
+        <p class="etiqueta-ritual">RITUAL 03</p>
+        <h1>Repite un color</h1>
+        <p>Elige un color. Concéntrate solamente en él.</p>
+    </div>
+
+    <div class="paleta-colores" id="paleta-colores">
+        <button class="color-opcion" data-color="#E8A1A8"
+            style="--color-opcion:#E8A1A8" aria-label="Rosa"></button>
+
+        <button class="color-opcion" data-color="#A6B8E8"
+            style="--color-opcion:#A6B8E8" aria-label="Azul"></button>
+
+        <button class="color-opcion" data-color="#A9C6A5"
+            style="--color-opcion:#A9C6A5" aria-label="Verde"></button>
+
+        <button class="color-opcion" data-color="#D9BD8C"
+            style="--color-opcion:#D9BD8C" aria-label="Amarillo"></button>
+
+        <button class="color-opcion" data-color="#B9A2D8"
+            style="--color-opcion:#B9A2D8" aria-label="Lila"></button>
+    </div>
+
+    <div class="zona-colores" id="zona-colores">
+        <div class="circulo-color" id="circulo-color"></div>
+        <p id="texto-colores">Escoge el color que quieras.</p>
+    </div>
+
+    <video id="camara-colores" autoplay playsinline muted></video>
+    <canvas id="canvas-colores" hidden></canvas>
+
+    <button id="activar-camara-colores" class="boton-ritual">
+        Activar cámara
+    </button>
+
+    <p id="mensaje-colores" class="mensaje-ritual">
+        Cuando estés lista, cubre la cámara con tu dedo.
+    </p>
+
+    <div id="final-colores" class="final-ritual">
+        <p>El color ha llenado la pantalla.</p>
+        <p>Puedes dejar de mirarlo.</p>
+        <button id="continuar-colores" class="boton-ritual">
+            Volver a la habitación
+        </button>
+    </div>
+
+    <button id="volver-colores" class="boton-volver">
+        Volver a la habitación
+    </button>
+
+</section>
+
+
+<!-- RITUAL 04: RUIDO BLANCO -->
+
+<section id="ritual-ruido" class="pantalla">
+
+    <div class="encabezado-ritual">
+        <p class="etiqueta-ritual">RITUAL 04</p>
+        <h1>Sintoniza el silencio</h1>
+        <p>Encuentra el sonido que te permita descansar.</p>
+    </div>
+
+    <div class="radio-ruido" id="radio-ruido">
+
+        <div class="radio-antena"></div>
+
+        <div class="radio-pantalla">
+            <span id="frecuencia-ruido">88.8</span>
+            <small>FM · WHITE NOISE</small>
+        </div>
+
+        <div class="radio-parlante">
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+            <span></span><span></span><span></span>
+        </div>
+
+        <div class="radio-indicador">
+            <span id="nivel-ruido"></span>
+        </div>
+
+    </div>
+
+    <p id="mensaje-ruido" class="mensaje-ritual">
+        Enciende la radio para comenzar.
+    </p>
+
+    <button id="activar-ruido" class="boton-ritual">
+        Encender radio
+    </button>
+
+    <div id="control-ruido" class="control-ruido" hidden>
+        <p>Inclina tu celular hacia los lados para ajustar el sonido.</p>
+
+        <div class="barra-inclinacion">
+            <span>←</span>
+            <div class="barra-centro">
+                <div id="indicador-inclinacion"></div>
+            </div>
+            <span>→</span>
+        </div>
+
+        <label for="volumen-ruido">
+            También puedes ajustar el sonido aquí:
+        </label>
+
+        <input
+            id="volumen-ruido"
+            type="range"
+            min="0"
+            max="100"
+            value="35"
+        >
+
+        <p id="texto-nivel-ruido">Intensidad: 35%</p>
+
+        <button id="terminar-ruido" class="boton-ritual">
+            Encontré mi sonido
+        </button>
+    </div>
+
+    <div id="final-ruido" class="final-ritual">
+        <p>La radio encontró su frecuencia.</p>
+        <p>Quédate un momento escuchando.</p>
+        <button id="continuar-ruido" class="boton-ritual">
+            Volver a la habitación
+        </button>
+    </div>
+
+    <button id="volver-ruido" class="boton-volver">
+        Volver a la habitación
+    </button>
+
+</section>
+
+
     </main>
 
-    <script src="js/app.js?v=3"></script>
+    <script src="js/app.js?v=4"></script>
 
 </body>
 </html>

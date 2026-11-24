@@ -947,3 +947,306 @@ body {
     font-size: 22px;
 }
 
+
+/* =================================
+   RITUAL 03: REPETICIÓN DE COLORES
+================================= */
+
+#ritual-colores {
+    position: relative;
+    overflow: hidden;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    padding: 28px 18px;
+    background: #10182d;
+}
+
+#ritual-colores .encabezado-ritual,
+#ritual-colores .paleta-colores,
+#ritual-colores #activar-camara-colores,
+#ritual-colores #mensaje-colores,
+#ritual-colores #volver-colores {
+    position: relative;
+    z-index: 3;
+}
+
+.paleta-colores {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin: 15px 0;
+}
+
+.color-opcion {
+    width: 38px;
+    height: 38px;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    background: var(--color-opcion);
+    cursor: pointer;
+}
+
+.color-opcion.seleccionado {
+    border-color: white;
+    outline: 2px solid var(--color-opcion);
+    outline-offset: 3px;
+}
+
+.zona-colores {
+    width: 100%;
+    min-height: 260px;
+    flex: 1;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.circulo-color {
+    position: absolute;
+    width: 32vmin;
+    height: 32vmin;
+    min-width: 110px;
+    min-height: 110px;
+    border-radius: 50%;
+    background: #E8A1A8;
+    transform: scale(0.15);
+    transition: background 0.4s ease;
+    pointer-events: none;
+}
+
+#texto-colores {
+    position: relative;
+    z-index: 1;
+    color: white;
+    font-size: 13px;
+    text-shadow: 0 1px 5px #0008;
+    pointer-events: none;
+}
+
+#camara-colores {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.boton-ritual {
+    border: 1px solid #aaa5d0;
+    border-radius: 30px;
+    padding: 14px 25px;
+    min-height: 46px;
+    background: #455681;
+    color: white;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.mensaje-ritual {
+    min-height: 22px;
+    color: #d5cfe5;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.final-ritual {
+    display: none;
+    position: relative;
+    z-index: 4;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.final-ritual.visible {
+    display: flex;
+}
+
+#ritual-colores.completo .circulo-color {
+    position: fixed;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    width: 32vmin;
+    height: 32vmin;
+    transform: translate(-50%, -50%) scale(12);
+}
+
+#ritual-colores.completo .encabezado-ritual,
+#ritual-colores.completo .paleta-colores,
+#ritual-colores.completo #activar-camara-colores,
+#ritual-colores.completo #mensaje-colores,
+#ritual-colores.completo #volver-colores {
+    opacity: 0;
+}
+
+#ritual-colores.completo #texto-colores {
+    opacity: 0;
+}
+
+
+/* =================================
+   RITUAL 04: RADIO Y RUIDO BLANCO
+================================= */
+
+#ritual-ruido {
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    padding: 28px 20px;
+    background:
+        radial-gradient(ellipse at center, #283653, #10182d 75%);
+}
+
+.radio-ruido {
+    width: min(80%, 290px);
+    min-height: 190px;
+    padding: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    border: 5px solid #8c8290;
+    border-radius: 22px;
+    background: linear-gradient(145deg, #c3a78e, #806e68);
+    box-shadow: 0 15px 35px #0005;
+}
+
+.radio-antena {
+    position: absolute;
+    top: -37px;
+    right: 30px;
+    width: 4px;
+    height: 38px;
+    background: #c5c2c7;
+    transform: rotate(25deg);
+    transform-origin: bottom;
+}
+
+.radio-pantalla {
+    width: 100%;
+    padding: 12px;
+    border-radius: 7px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #273b3b;
+    color: #d8e4c5;
+    box-shadow: inset 0 0 10px #0008;
+}
+
+.radio-pantalla span {
+    font-family: monospace;
+    font-size: 30px;
+    letter-spacing: 5px;
+}
+
+.radio-pantalla small {
+    font-size: 9px;
+    letter-spacing: 2px;
+}
+
+.radio-parlante {
+    display: grid;
+    grid-template-columns: repeat(3, 15px);
+    gap: 8px;
+    padding: 10px;
+}
+
+.radio-parlante span {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    background: #4e4544;
+    box-shadow: inset 0 2px 4px #0008;
+}
+
+.radio-indicador {
+    width: 100%;
+    height: 5px;
+    border-radius: 5px;
+    background: #514542;
+    overflow: hidden;
+}
+
+#nivel-ruido {
+    display: block;
+    width: 35%;
+    height: 100%;
+    background: #e8d2a9;
+    transition: width 0.15s;
+}
+
+.control-ruido {
+    width: 100%;
+    max-width: 350px;
+    color: #e1dceb;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.control-ruido[hidden] {
+    display: none;
+}
+
+.barra-inclinacion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.barra-centro {
+    width: 180px;
+    height: 8px;
+    position: relative;
+    border-radius: 10px;
+    background: #59627c;
+}
+
+#indicador-inclinacion {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    background: #f3dfb6;
+    transform: translate(-50%, -50%);
+    transition: left 0.15s;
+}
+
+#volumen-ruido {
+    width: 100%;
+    margin: 14px 0;
+    accent-color: #d9bd8c;
+}
+
+#final-ruido {
+    margin-top: 12px;
+}
+
+@media (max-height: 700px) {
+    #ritual-colores,
+    #ritual-ruido {
+        padding-top: 18px;
+        padding-bottom: 18px;
+    }
+
+    .zona-colores {
+        min-height: 200px;
+    }
+
+    .radio-ruido {
+        min-height: 160px;
+    }
+}

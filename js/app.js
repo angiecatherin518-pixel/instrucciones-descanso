@@ -85,6 +85,23 @@ function iniciarRitual(cama) {
 
     return;
 }
+    
+    if (ritual === "colores") {
+        pantallaHabitacion.classList.remove("activa");
+        document.getElementById("ritual-colores").classList.add("activa");
+
+        reiniciarColores();
+        return;
+    }
+
+    if (ritual === "ruido") {
+        pantallaHabitacion.classList.remove("activa");
+        document.getElementById("ritual-ruido").classList.add("activa");
+
+        reiniciarRuido();
+        return;
+    }
+
 
     mensajeRitual.textContent =
         "Este ritual estará disponible próximamente.";
@@ -647,3 +664,242 @@ document.getElementById("volver-respiracion")
 
 document.getElementById("continuar-respiracion")
     .addEventListener("click", salirDeRespiracion);
+
+
+/* =================================
+   INTERACCIÓN: REPETICIÓN DE COLORES
+================================= */
+
+let colorSeleccionado = "#E8A1A8";
+let flujoCamaraColores = null;
+let animacionColores = null;
+let progresoColor = 0;
+let camaraActiva = false;
+
+const pantallaColores = document.getElementById("ritual-colores");
+const circuloColor = document.getElementById("circulo-color");
+const videoColores = document.getElementById("camara-colores");
+const canvasColores = document.getElementById("canvas-colores");
+const contextoColores = canvasColores.getContext("2d");
+
+const textoColores = document.getElementById("texto-colores");
+const mensajeColores = document.getElementById("mensaje-colores");
+const botonCamaraColores = document.getElementById("activar-camara-colores");
+const finalColores = document.getElementById("final-colores");
+
+const opcionesColor = document.querySelectorAll(".color-opcion");
+
+
+// ELEGIR COLOR
+
+opcionesColor.forEach((opcion) => {
+    opcion.addEventListener("click", () => {
+        colorSeleccionado = opcion.dataset.color;
+
+        circuloColor.style.background = colorSeleccionado;
+
+        opcionesColor.forEach((elemento) => {
+            elemento.classList.remove("seleccionado");
+        });
+
+        opcion.classList.add("seleccionado");
+
+        textoColores.textContent = "Ahora cubre la cámara con tu dedo.";
+        mensajeColores.textContent =
+            "El círculo crecerá mientras cubres la cámara.";
+    });
+});
+
+
+// REINICIAR
+
+function reiniciarColores() {
+    detenerCamaraColores();
+
+    progresoColor = 0;
+    camaraActiva = false;
+
+    pantallaColores.classList.remove("completo");
+
+    circuloColor.style.background = colorSeleccionado;
+    circuloColor.style.transform = "scale(0.15)";
+
+    textoColores.textContent = "Escoge el color que quieras.";
+    mensajeColores.textContent =
+        "Cuando estés lista, cubre la cámara con tu dedo.";
+
+    botonCamaraColores.hidden = false;
+    botonCamaraColores.disabled = false;
+    botonCamaraColores.textContent = "Activar cámara";
+
+    finalColores.classList.remove("visible");
+}
+
+
+// ACTIVAR CÁMARA
+
+async function activarCamaraColores() {
+    try {
+        mensajeColores.textContent =
+            "Solicitando permiso para usar la cámara...";
+
+        flujoCamaraColores =
+            await navigator.mediaDevices.getUserMedia({
+                video: {
+                    facingMode: { ideal: "environment" }
+                },
+                audio: false
+            });
+
+        videoColores.srcObject = flujoCamaraColores;
+
+        await videoColores.play();
+
+        canvasColores.width = 32;
+        canvasColores.height = 32;
+
+        camaraActiva = true;
+
+        botonCamaraColores.hidden = true;
+
+        textoColores.textContent =
+            "Cubre la cámara con tu dedo.";
+
+        mensajeColores.textContent =
+            "El color comenzará a expandirse.";
+
+        detectarCoberturaCamara();
+
+    } catch (error) {
+        mensajeColores.textContent =
+            "No pudimos activar la cámara. Revisa los permisos y vuelve a intentarlo.";
+
+        botonCamaraColores.textContent = "Intentar de nuevo";
+    }
+}
+
+
+// DETECTAR SI LA CÁMARA ESTÁ CUBIERTA
+
+function detectarCoberturaCamara() {
+    if (!camaraActiva) return;
+
+    if (videoColores.readyState >= 2) {
+        contextoColores.drawImage(
+            videoColores,
+            0,
+            0,
+            canvasColores.width,
+            canvasColores.height
+        );
+
+        const pixeles = contextoColores.getImageData(
+            0,
+            0,
+            canvasColores.width,
+            canvasColores.height
+        ).data;
+
+        let luminosidad = 0;
+        let cantidadPixeles = 0;
+
+        for (let i = 0; i < pixeles.length; i += 4) {
+            luminosidad += (
+                pixeles[i] * 0.299 +
+                pixeles[i + 1] * 0.587 +
+                pixeles[i + 2] * 0.114
+            );
+
+            cantidadPixeles++;
+        }
+
+        const promedio = luminosidad / cantidadPixeles;
+
+        // Una imagen muy oscura puede indicar que la cámara está cubierta.
+        if (promedio < 35) {
+            progresoColor += 0.012;
+        } else {
+            progresoColor = Math.max(0, progresoColor - 0.002);
+        }
+
+        progresoColor = Math.min(progresoColor, 1);
+
+        const escala = 0.15 + progresoColor * 8;
+
+        circuloColor.style.transform = `scale(${escala})`;
+
+        if (progresoColor >= 1) {
+            completarColores();
+            return;
+        }
+    }
+
+    animacionColores =
+        requestAnimationFrame(detectarCoberturaCamara);
+}
+
+
+// COMPLETAR RITUAL
+
+function completarColores() {
+    if (!camaraActiva) return;
+
+    detenerCamaraColores();
+
+    pantallaColores.classList.add("completo");
+
+    mensajeColores.textContent =
+        "El color ha llenado todo el espacio.";
+
+    finalColores.classList.add("visible");
+
+    botonCamaraColores.hidden = true;
+}
+
+
+// DETENER CÁMARA
+
+function detenerCamaraColores() {
+    camaraActiva = false;
+
+    if (animacionColores !== null) {
+        cancelAnimationFrame(animacionColores);
+        animacionColores = null;
+    }
+
+    if (flujoCamaraColores) {
+        flujoCamaraColores.getTracks().forEach((pista) => {
+            pista.stop();
+        });
+
+        flujoCamaraColores = null;
+    }
+
+    videoColores.srcObject = null;
+}
+
+
+// BOTONES Y SALIDA
+
+botonCamaraColores.addEventListener(
+    "click",
+    activarCamaraColores
+);
+
+function salirDeColores() {
+    detenerCamaraColores();
+
+    pantallaColores.classList.remove("activa", "completo");
+    pantallaHabitacion.classList.add("activa");
+
+    document.querySelector('[data-ritual="colores"]')
+        .classList.remove("deslizada");
+}
+
+document.getElementById("volver-colores")
+    .addEventListener("click", salirDeColores);
+
+document.getElementById("continuar-colores")
+    .addEventListener("click", salirDeColores);
+
+
