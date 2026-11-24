@@ -767,7 +767,21 @@ async function activarCamaraColores() {
         textoColores.textContent =
             "Cubre la cámara con tu dedo.";
 
-        
+        mensajeColores.textContent =
+            "El color comenzará a expandirse.";
+
+        detectarCoberturaCamara();
+
+    } catch (error) {
+        mensajeColores.textContent =
+            "No pudimos activar la cámara. Revisa los permisos y vuelve a intentarlo.";
+
+        botonCamaraColores.textContent = "Intentar de nuevo";
+    }
+}
+
+
+
 // DETECTAR CADA VEZ QUE SE TAPA Y DESTAPA LA CÁMARA
 
 function detectarCoberturaCamara() {
@@ -855,75 +869,6 @@ function actualizarCirculoColor() {
     circuloColor.style.transform =
         `scale(${escala})`;
 }
-
-    } catch (error) {
-        mensajeColores.textContent =
-            "No pudimos activar la cámara. Revisa los permisos y vuelve a intentarlo.";
-
-        botonCamaraColores.textContent = "Intentar de nuevo";
-    }
-}
-
-
-// DETECTAR SI LA CÁMARA ESTÁ CUBIERTA
-
-function detectarCoberturaCamara() {
-    if (!camaraActiva) return;
-
-    if (videoColores.readyState >= 2) {
-        contextoColores.drawImage(
-            videoColores,
-            0,
-            0,
-            canvasColores.width,
-            canvasColores.height
-        );
-
-        const pixeles = contextoColores.getImageData(
-            0,
-            0,
-            canvasColores.width,
-            canvasColores.height
-        ).data;
-
-        let luminosidad = 0;
-        let cantidadPixeles = 0;
-
-        for (let i = 0; i < pixeles.length; i += 4) {
-            luminosidad += (
-                pixeles[i] * 0.299 +
-                pixeles[i + 1] * 0.587 +
-                pixeles[i + 2] * 0.114
-            );
-
-            cantidadPixeles++;
-        }
-
-        const promedio = luminosidad / cantidadPixeles;
-
-        // Una imagen muy oscura puede indicar que la cámara está cubierta.
-        if (promedio < 35) {
-            progresoColor += 0.012;
-        } else {
-            progresoColor = Math.max(0, progresoColor - 0.002);
-        }
-
-        progresoColor = Math.min(progresoColor, 1);
-
-        const escala = 0.15 + progresoColor * 8;
-
-        circuloColor.style.transform = `scale(${escala})`;
-
-        if (progresoColor >= 1) {
-            completarColores();
-            return;
-        }
-    }
-
-    animacionColores =
-        requestAnimationFrame(detectarCoberturaCamara);
-}
-
 
 // COMPLETAR RITUAL
 
