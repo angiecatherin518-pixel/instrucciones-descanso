@@ -1061,13 +1061,17 @@ async function encenderRadio() {
 
 // ACTIVAR SENSOR DE INCLINACIÓN
 
+
 async function activarOrientacion() {
 
-    // Algunos dispositivos, especialmente iPhone,
-    // requieren permiso explícito.
+    if (!("DeviceOrientationEvent" in window)) {
+        mensajeRuido.textContent =
+            "Tu dispositivo no permite detectar la inclinación. Puedes usar la barra para ajustar el sonido.";
+        return;
+    }
 
+    // Solicitar permiso en dispositivos que lo requieren.
     if (
-        typeof DeviceOrientationEvent !== "undefined" &&
         typeof DeviceOrientationEvent.requestPermission === "function"
     ) {
         try {
@@ -1076,52 +1080,35 @@ async function activarOrientacion() {
 
             if (permiso !== "granted") {
                 mensajeRuido.textContent =
-                    "Puedes ajustar el sonido con la barra de intensidad.";
-
+                    "No se concedió el permiso. Puedes usar la barra de intensidad.";
                 return;
             }
 
         } catch (error) {
+            console.error("Error al solicitar permiso:", error);
             mensajeRuido.textContent =
-                "No pudimos activar la inclinación. Usa la barra para ajustar el sonido.";
-
+                "No pudimos acceder al sensor. Usa la barra de intensidad.";
             return;
         }
     }
 
-    if ("DeviceOrientationEvent" in window) {
-        window.addEventListener(
-            "deviceorientation",
-            cambiarIntensidadPorInclinacion
-        );
-
-        orientacionActiva = true;
-
-    } else {
-        mensajeRuido.textContent =
-            "Tu dispositivo no detecta la inclinación. Puedes usar la barra para ajustar el sonido.";
-    }
-}
-
-
-// MODIFICAR EL VOLUMEN AL INCLINAR EL CELULAR
-
-function cambiarIntensidadPorInclinacion(evento) {
-    if (!gananciaRuido || evento.gamma === null) return;
-
-    // gamma representa la inclinación lateral del celular.
-    const inclinacion = Math.max(
-        -30,
-        Math.min(30, evento.gamma)
+    // Evitar registrar el mismo evento varias veces.
+    window.removeEventListener(
+        "deviceorientation",
+        cambiarIntensidadPorInclinacion
     );
 
-    const porcentaje = ((inclinacion + 30) / 60) * 100;
+    window.addEventListener(
+        "deviceorientation",
+        cambiarIntensidadPorInclinacion
+    );
 
-    cambiarVolumen(porcentaje);
+    orientacionActiva = true;
 
-    indicadorInclinacion.style.left =
-        `${(inclinacion + 30) / 60 * 100}%`;
+    mensajeRuido.textContent =
+        "Inclina tu celular hacia los lados para encontrar tu sonido.";
 }
+
 
 
 // CAMBIAR EL VOLUMEN
@@ -1150,11 +1137,31 @@ function cambiarVolumen(porcentaje) {
 }
 
 
-// BARRA ALTERNATIVA PARA AJUSTAR EL VOLUMEN
 
-volumenRuido.addEventListener("input", (evento) => {
-    cambiarVolumen(Number(evento.target.value));
-});
+function cambiarIntensidadPorInclinacion(evento) {
+
+    if (!gananciaRuido) return;
+
+    // Comprobar que el sensor esté enviando datos.
+    if (evento.gamma === null || evento.gamma === undefined) {
+        return;
+    }
+
+    // Limitar la inclinación entre -30 y 30 grados.
+    const inclinacion = Math.max(
+        -30,
+        Math.min(30, evento.gamma)
+    );
+
+    // Convertir la inclinación en un porcentaje de volumen.
+    const porcentaje = ((inclinacion + 30) / 60) * 100;
+
+    cambiarVolumen(porcentaje);
+
+    indicadorInclinacion.style.left =
+        `${porcentaje}%`;
+}
+
 
 
 // ENCONTRAR LA INTENSIDAD IDEAL
