@@ -934,3 +934,302 @@ document.getElementById("continuar-colores")
     .addEventListener("click", salirDeColores);
 
 
+/* =================================
+   INTERACCIÓN: RUIDO BLANCO
+================================= */
+
+let contextoRuido = null;
+let fuenteRuido = null;
+let gananciaRuido = null;
+let volumenActual = 0.35;
+let orientacionActiva = false;
+
+const botonActivarRuido = document.getElementById("activar-ruido");
+const botonTerminarRuido = document.getElementById("terminar-ruido");
+
+const controlRuido = document.getElementById("control-ruido");
+const mensajeRuido = document.getElementById("mensaje-ruido");
+
+const volumenRuido = document.getElementById("volumen-ruido");
+const textoNivelRuido = document.getElementById("texto-nivel-ruido");
+
+const indicadorNivelRuido = document.getElementById("nivel-ruido");
+const indicadorInclinacion = document.getElementById("indicador-inclinacion");
+
+const finalRuido = document.getElementById("final-ruido");
+
+
+// REINICIAR EL RITUAL
+
+function reiniciarRuido() {
+    detenerSonidoRuido();
+
+    volumenActual = 0.35;
+
+    volumenRuido.value = 35;
+    textoNivelRuido.textContent = "Intensidad: 35%";
+
+    indicadorNivelRuido.style.width = "35%";
+    indicadorInclinacion.style.left = "50%";
+
+    mensajeRuido.textContent =
+        "Enciende la radio para comenzar.";
+
+    botonActivarRuido.hidden = false;
+    botonActivarRuido.disabled = false;
+    botonActivarRuido.textContent = "Encender radio";
+
+    controlRuido.hidden = true;
+    finalRuido.classList.remove("visible");
+
+    document.getElementById("radio-ruido")
+        .classList.remove("encendida");
+}
+
+
+// CREAR RUIDO BLANCO
+
+function crearRuidoBlanco() {
+    const AudioContextClass =
+        window.AudioContext || window.webkitAudioContext;
+
+    contextoRuido = new AudioContextClass();
+
+    const duracion = 2;
+    const frecuencia = contextoRuido.sampleRate;
+
+    const buffer = contextoRuido.createBuffer(
+        1,
+        frecuencia * duracion,
+        frecuencia
+    );
+
+    const datos = buffer.getChannelData(0);
+
+    // Crear una señal de ruido blanco
+    for (let i = 0; i < datos.length; i++) {
+        datos[i] = Math.random() * 2 - 1;
+    }
+
+    fuenteRuido = contextoRuido.createBufferSource();
+    fuenteRuido.buffer = buffer;
+    fuenteRuido.loop = true;
+
+    gananciaRuido = contextoRuido.createGain();
+    gananciaRuido.gain.value = volumenActual;
+
+    fuenteRuido.connect(gananciaRuido);
+    gananciaRuido.connect(contextoRuido.destination);
+
+    fuenteRuido.start();
+}
+
+
+// ENCENDER LA RADIO
+
+async function encenderRadio() {
+    try {
+        botonActivarRuido.disabled = true;
+
+        mensajeRuido.textContent =
+            "Sintonizando la radio...";
+
+        crearRuidoBlanco();
+
+        await contextoRuido.resume();
+
+        document.getElementById("radio-ruido")
+            .classList.add("encendida");
+
+        botonActivarRuido.hidden = true;
+        controlRuido.hidden = false;
+
+        mensajeRuido.textContent =
+            "Inclina tu celular y encuentra una intensidad agradable.";
+
+        // Activar el sensor de inclinación
+        await activarOrientacion();
+
+    } catch (error) {
+        mensajeRuido.textContent =
+            "No pudimos iniciar el sonido. Comprueba que tu navegador permita reproducir audio.";
+
+        botonActivarRuido.disabled = false;
+    }
+}
+
+
+// ACTIVAR SENSOR DE INCLINACIÓN
+
+async function activarOrientacion() {
+
+    // Algunos dispositivos, especialmente iPhone,
+    // requieren permiso explícito.
+
+    if (
+        typeof DeviceOrientationEvent !== "undefined" &&
+        typeof DeviceOrientationEvent.requestPermission === "function"
+    ) {
+        try {
+            const permiso =
+                await DeviceOrientationEvent.requestPermission();
+
+            if (permiso !== "granted") {
+                mensajeRuido.textContent =
+                    "Puedes ajustar el sonido con la barra de intensidad.";
+
+                return;
+            }
+
+        } catch (error) {
+            mensajeRuido.textContent =
+                "No pudimos activar la inclinación. Usa la barra para ajustar el sonido.";
+
+            return;
+        }
+    }
+
+    if ("DeviceOrientationEvent" in window) {
+        window.addEventListener(
+            "deviceorientation",
+            cambiarIntensidadPorInclinacion
+        );
+
+        orientacionActiva = true;
+
+    } else {
+        mensajeRuido.textContent =
+            "Tu dispositivo no detecta la inclinación. Puedes usar la barra para ajustar el sonido.";
+    }
+}
+
+
+// MODIFICAR EL VOLUMEN AL INCLINAR EL CELULAR
+
+function cambiarIntensidadPorInclinacion(evento) {
+    if (!gananciaRuido || evento.gamma === null) return;
+
+    // gamma representa la inclinación lateral del celular.
+    const inclinacion = Math.max(
+        -30,
+        Math.min(30, evento.gamma)
+    );
+
+    const porcentaje = ((inclinacion + 30) / 60) * 100;
+
+    cambiarVolumen(porcentaje);
+
+    indicadorInclinacion.style.left =
+        `${(inclinacion + 30) / 60 * 100}%`;
+}
+
+
+// CAMBIAR EL VOLUMEN
+
+function cambiarVolumen(porcentaje) {
+    volumenActual = Math.max(
+        0,
+        Math.min(1, porcentaje / 100)
+    );
+
+    if (gananciaRuido && contextoRuido) {
+        gananciaRuido.gain.setTargetAtTime(
+            volumenActual,
+            contextoRuido.currentTime,
+            0.08
+        );
+    }
+
+    volumenRuido.value = porcentaje;
+
+    textoNivelRuido.textContent =
+        `Intensidad: ${Math.round(porcentaje)}%`;
+
+    indicadorNivelRuido.style.width =
+        `${porcentaje}%`;
+}
+
+
+// BARRA ALTERNATIVA PARA AJUSTAR EL VOLUMEN
+
+volumenRuido.addEventListener("input", (evento) => {
+    cambiarVolumen(Number(evento.target.value));
+});
+
+
+// ENCONTRAR LA INTENSIDAD IDEAL
+
+function terminarRitualRuido() {
+    if (!contextoRuido) return;
+
+    window.removeEventListener(
+        "deviceorientation",
+        cambiarIntensidadPorInclinacion
+    );
+
+    orientacionActiva = false;
+
+    controlRuido.hidden = true;
+    finalRuido.classList.add("visible");
+
+    mensajeRuido.textContent =
+        "Has encontrado tu propia frecuencia.";
+}
+
+
+// APAGAR Y LIBERAR EL AUDIO
+
+function detenerSonidoRuido() {
+    window.removeEventListener(
+        "deviceorientation",
+        cambiarIntensidadPorInclinacion
+    );
+
+    orientacionActiva = false;
+
+    if (fuenteRuido) {
+        try {
+            fuenteRuido.stop();
+        } catch (error) {
+            // La fuente ya estaba detenida.
+        }
+
+        fuenteRuido = null;
+    }
+
+    if (contextoRuido) {
+        contextoRuido.close();
+        contextoRuido = null;
+    }
+
+    gananciaRuido = null;
+}
+
+
+// BOTONES
+
+botonActivarRuido.addEventListener("click", encenderRadio);
+
+botonTerminarRuido.addEventListener("click", terminarRitualRuido);
+
+
+// SALIR DEL RITUAL
+
+function salirDeRuido() {
+    detenerSonidoRuido();
+
+    document.getElementById("ritual-ruido")
+        .classList.remove("activa");
+
+    pantallaHabitacion.classList.add("activa");
+
+    document.querySelector('[data-ritual="ruido"]')
+        .classList.remove("deslizada");
+}
+
+document.getElementById("volver-ruido")
+    .addEventListener("click", salirDeRuido);
+
+document.getElementById("continuar-ruido")
+    .addEventListener("click", salirDeRuido);
+
