@@ -675,6 +675,7 @@ let flujoCamaraColores = null;
 let animacionColores = null;
 let progresoColor = 0;
 let camaraActiva = false;
+let camaraCubierta = false;
 
 const pantallaColores = document.getElementById("ritual-colores");
 const circuloColor = document.getElementById("circulo-color");
@@ -718,6 +719,7 @@ function reiniciarColores() {
 
     progresoColor = 0;
     camaraActiva = false;
+    camaraCubierta = false; 
 
     pantallaColores.classList.remove("completo");
 
@@ -765,10 +767,94 @@ async function activarCamaraColores() {
         textoColores.textContent =
             "Cubre la cámara con tu dedo.";
 
-        mensajeColores.textContent =
-            "El color comenzará a expandirse.";
+        
+// DETECTAR CADA VEZ QUE SE TAPA Y DESTAPA LA CÁMARA
 
-        detectarCoberturaCamara();
+function detectarCoberturaCamara() {
+    if (!camaraActiva) return;
+
+    if (videoColores.readyState >= 2) {
+
+        contextoColores.drawImage(
+            videoColores,
+            0,
+            0,
+            canvasColores.width,
+            canvasColores.height
+        );
+
+        const pixeles = contextoColores.getImageData(
+            0,
+            0,
+            canvasColores.width,
+            canvasColores.height
+        ).data;
+
+        let luminosidad = 0;
+        let cantidadPixeles = 0;
+
+        for (let i = 0; i < pixeles.length; i += 4) {
+            luminosidad += (
+                pixeles[i] * 0.299 +
+                pixeles[i + 1] * 0.587 +
+                pixeles[i + 2] * 0.114
+            );
+
+            cantidadPixeles++;
+        }
+
+        const promedio = luminosidad / cantidadPixeles;
+
+        // DETECTAR CUANDO SE CUBRE LA CÁMARA
+        if (promedio < 35 && !camaraCubierta) {
+
+            camaraCubierta = true;
+
+            // Cada cobertura agrega un 20 %
+            progresoColor = Math.min(
+                1,
+                progresoColor + 0.20
+            );
+
+            actualizarCirculoColor();
+
+            mensajeColores.textContent =
+                `El color está creciendo: ${Math.round(progresoColor * 100)} %`;
+
+            // Completar cuando llegue al 100 %
+            if (progresoColor >= 1) {
+                completarColores();
+                return;
+            }
+        }
+
+        // DETECTAR CUANDO SE DESTAPA LA CÁMARA
+        if (promedio > 55 && camaraCubierta) {
+
+            camaraCubierta = false;
+
+            textoColores.textContent =
+                "Vuelve a cubrir la cámara.";
+
+            mensajeColores.textContent =
+                `Llevas ${Math.round(progresoColor * 100)} %. Sigue repitiendo.`;
+        }
+    }
+
+    animacionColores =
+        requestAnimationFrame(detectarCoberturaCamara);
+}
+
+
+// ACTUALIZAR EL TAMAÑO DEL CÍRCULO
+
+function actualizarCirculoColor() {
+
+    const escala = 0.15 + progresoColor * 8;
+
+    circuloColor.style.transform =
+        `scale(${escala})`;
+}
 
     } catch (error) {
         mensajeColores.textContent =
