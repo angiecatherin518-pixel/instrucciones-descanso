@@ -1254,3 +1254,5 @@ window.addEventListener("deviceorientation", function(evento) {
     console.log("Beta:", evento.beta);
 
 });
+
+mensajeRuido.textContent = "PRUEBA: JAVASCRIPT ACTUALIZADO";
