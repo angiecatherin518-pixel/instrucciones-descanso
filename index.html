@@ -430,9 +430,6 @@
 
     </div>
 
-    <button id="despertar-manualmente" class="boton-despertar">
-        Continuar
-    </button>
 
 </section>
 
@@ -468,69 +465,41 @@
 
 <!-- FINAL 1: LEVANTARSE -->
 
-<section id="final-entrevista" class="pantalla final-historia">
+<!-- FINAL 1: APAGAR LA ALARMA -->
 
-    <div class="sol-final">☀</div>
+<section id="final-entrevista" class="pantalla final-historia pantalla-final-negra">
 
-    <p class="etiqueta-final">07:05 AM</p>
+    <div class="contenido-final">
+        <div id="texto-final-entrevista" class="texto-final-progresivo"></div>
 
-    <h1>Un nuevo día comienza.</h1>
-
-    <p>
-        Te levantas, te preparas y sales hacia la entrevista.
-    </p>
-
-    <p>
-        Al menos ahora has descansado lo suficiente para cumplir
-        con lo que se espera de ti.
-    </p>
-
-    <p class="frase-final">
-        Descansar para poder seguir.
-    </p>
-
-    <button class="reiniciar-experiencia">
-        Volver a empezar
-    </button>
+        <button class="reiniciar-experiencia boton-final" hidden>
+            Volver a empezar
+        </button>
+    </div>
 
 </section>
 
 
 <!-- FINAL 2: ELEGIR DESCANSAR -->
 
-<section id="final-descanso" class="pantalla final-historia">
+<!-- FINAL 2: POSPONER LA ALARMA -->
 
-    <div class="luna-final">☾</div>
+<section id="final-descanso" class="pantalla final-historia pantalla-final-negra">
 
-    <p class="etiqueta-final">07:00 AM</p>
+    <div class="contenido-final">
+        <div id="texto-final-descanso" class="texto-final-progresivo"></div>
 
-    <h1>Hoy puedes quedarte un poco más.</h1>
-
-    <p>
-        La entrevista puede esperar unos minutos.
-        No tienes que convertir cada momento de tu vida
-        en una tarea pendiente.
-    </p>
-
-    <p>
-        Cierras los ojos otra vez. Esta vez no para
-        estar preparada para mañana, sino porque quieres.
-    </p>
-
-    <p class="frase-final">
-        Descansar también es suficiente.
-    </p>
-
-    <button class="reiniciar-experiencia">
-        Volver a empezar
-    </button>
+        <button class="reiniciar-experiencia boton-final" hidden>
+            Volver a empezar
+        </button>
+    </div>
 
 </section>
 
 
     </main>
 
-    <script src="js/app.js?v=34"></script>
+    <script src="js/app.js?v=35"></script>
 
 </body>
 </html>

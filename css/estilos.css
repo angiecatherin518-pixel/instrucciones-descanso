@@ -1784,3 +1784,74 @@ body {
         opacity: 1;
     }
 }
+
+/* =================================
+   FINALES DE LA EXPERIENCIA
+================================= */
+
+.pantalla-final-negra {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100dvh;
+    width: 100%;
+    background: #000000;
+    color: #ffffff;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 35px 24px;
+    box-sizing: border-box;
+}
+
+.contenido-final {
+    width: 100%;
+    max-width: 580px;
+    margin: auto;
+    text-align: center;
+}
+
+.texto-final-progresivo {
+    color: #f2f0f4;
+    font-family: Georgia, serif;
+    font-size: clamp(17px, 4.5vw, 21px);
+    line-height: 1.9;
+    text-align: left;
+    white-space: pre-line;
+    min-height: 200px;
+    opacity: 1;
+}
+
+.boton-final {
+    margin-top: 35px;
+    padding: 13px 25px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 30px;
+    background: transparent;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.boton-final:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* PÁRRAFOS DE LOS FINALES */
+
+.texto-final-progresivo p {
+    margin: 0 0 25px;
+    text-align: left;
+    line-height: 1.9;
+}
+
+.texto-final-progresivo p:last-child {
+    margin-bottom: 0;
+}
+
+.texto-final-progresivo {
+    width: 100%;
+    max-width: 580px;
+    margin: 0 auto;
+}

@@ -1716,12 +1716,71 @@ let temporizadorEscritura = null;
 
 const finalEntrevista = document.getElementById("final-entrevista");
 const finalDescanso = document.getElementById("final-descanso");
+// ELEMENTOS DE LOS FINALES
+
+const textoFinalEntrevista = document.getElementById("texto-final-entrevista");
+const textoFinalDescanso = document.getElementById("texto-final-descanso");
+
+const botonReiniciarEntrevista = finalEntrevista.querySelector(".reiniciar-experiencia");
+const botonReiniciarDescanso = finalDescanso.querySelector(".reiniciar-experiencia");
+
+// TEXTOS DE LOS FINALES
+
+const parrafosFinalEntrevista = [
+    "Lo lograste. Después de toda una noche intentando descansar, finalmente estás listo para cumplir con lo que se espera de ti.",
+
+    "Una nueva jornada comienza y con ella, nuevas responsabilidades, nuevos objetivos y nuevas exigencias.",
+
+    "Pero, ¿en qué momento dejamos de descansar por nosotros mismos y empezamos a hacerlo para seguir produciendo?"
+];
+
+const parrafosFinalDescanso = [
+    "Decides no levantarte. La entrevista puede esperar. Las obligaciones también. Por una vez, no necesitas levantarte para cumplir con las expectativas, ni recuperar energías para una nueva jornada.",
+
+    "No tienes que justificar tu descanso. Esta vez, simplemente duermes. No para producir, no para cumplir, no para llegar a ninguna parte.",
+
+    "Solo porque puedes. Solo porque quieres. Solo por ser."
+];
+
 
 const botonDespertar = document.getElementById("despertar-manualmente");
 const botonApagarAlarma = document.getElementById("apagar-alarma");
 const botonPosponerAlarma = document.getElementById("posponer-alarma");
 
 let temporizadorAlarma = null;
+
+// ESCRIBIR LOS FINALES PROGRESIVAMENTE
+
+function esperar(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function escribirFinal(elemento, parrafos, boton) {
+
+    elemento.innerHTML = "";
+    boton.hidden = true;
+
+    for (let i = 0; i < parrafos.length; i++) {
+
+        const parrafo = document.createElement("p");
+
+        elemento.appendChild(parrafo);
+
+        for (let letra of parrafos[i]) {
+            parrafo.textContent += letra;
+            await esperar(35);
+        }
+
+        // Pausa entre párrafos.
+        if (i < parrafos.length - 1) {
+            await esperar(1400);
+        }
+    }
+
+    // Mostrar el botón cuando termine toda la narración.
+    await esperar(1200);
+    boton.hidden = false;
+}
 
 // ESCRIBIR LA NARRACIÓN LETRA POR LETRA
 
@@ -1835,6 +1894,12 @@ function levantarse() {
     clearTimeout(temporizadorAlarma);
 
     cambiarPantalla(escenaAlarma, finalEntrevista);
+
+    escribirFinal(
+        textoFinalEntrevista,
+        parrafosFinalEntrevista,
+        botonReiniciarEntrevista
+    );
 }
 
 
@@ -1845,6 +1910,12 @@ function seguirDescansando() {
     clearTimeout(temporizadorAlarma);
 
     cambiarPantalla(escenaAlarma, finalDescanso);
+
+    escribirFinal(
+        textoFinalDescanso,
+        parrafosFinalDescanso,
+        botonReiniciarDescanso
+    );
 }
 
 
