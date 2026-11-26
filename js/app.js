@@ -1476,7 +1476,7 @@ function iniciarPensamientosRuido() {
             clearInterval(temporizadorPensamientosRuido);
             temporizadorPensamientosRuido = null;
         }
-    }, 6500);
+    }, 3500);
 }
 
 
