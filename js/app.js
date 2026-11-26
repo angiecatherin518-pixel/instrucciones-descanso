@@ -394,6 +394,7 @@ const TOTAL_OVEJAS = 10;
 
 const oveja = document.getElementById("oveja");
 const numeroOvejas = document.getElementById("numero-ovejas");
+const audioBrinco = document.getElementById("audio-brinco");
 const botonSaltar = document.getElementById("saltar-oveja");
 const instruccionOvejas = document.getElementById("instruccion-ovejas");
 const finalOvejas = document.getElementById("final-ovejas");
@@ -426,6 +427,11 @@ function detenerSecuenciaOvejas() {
     clearTimeout(temporizadorCerrarConteo);
 
     puedeContarOveja = false;
+
+    if (audioBrinco) {
+    audioBrinco.pause();
+    audioBrinco.currentTime = 0;
+}
 }
 
 // REINICIAR EL RITUAL
@@ -470,9 +476,19 @@ function programarSaltoOveja() {
         "Observa cómo salta la oveja...";
 
     // Reiniciar la animación
-    oveja.classList.remove("saltando");
-    void oveja.offsetWidth;
-    oveja.classList.add("saltando");
+oveja.classList.remove("saltando");
+void oveja.offsetWidth;
+oveja.classList.add("saltando");
+
+// Reproducir el sonido del brinco
+if (audioBrinco) {
+    audioBrinco.pause();
+    audioBrinco.currentTime = 0;
+
+    audioBrinco.play().catch(error => {
+        console.log("No se pudo reproducir el sonido del brinco:", error);
+    });
+}
 
     // Habilitar el conteo cerca del punto más alto
     temporizadorAbrirConteo = setTimeout(() => {
