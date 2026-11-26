@@ -218,12 +218,16 @@ function activarAnimacionCama(cama) {
 
     cama.dataset.animando = "true";
 
+    // Ocultar la indicación mientras se reproduce el GIF
+    cama.classList.add("animando");
+
     // Activar el GIF
     ilustracion.src = ilustracion.dataset.gif;
 
     // Esperar a que termine la animación y abrir el ritual
     setTimeout(() => {
         cama.dataset.animando = "false";
+        cama.classList.remove("animando");
         iniciarRitual(cama);
     }, duracionGifCama);
 }
