@@ -1742,13 +1742,6 @@ const parrafosFinalDescanso = [
     "Solo porque puedes. Solo porque quieres. Solo por ser."
 ];
 
-
-const botonDespertar = document.getElementById("despertar-manualmente");
-const botonApagarAlarma = document.getElementById("apagar-alarma");
-const botonPosponerAlarma = document.getElementById("posponer-alarma");
-
-let temporizadorAlarma = null;
-
 // ESCRIBIR LOS FINALES PROGRESIVAMENTE
 
 function esperar(ms) {
@@ -1781,6 +1774,12 @@ async function escribirFinal(elemento, parrafos, boton) {
     await esperar(1200);
     boton.hidden = false;
 }
+
+const botonDespertar = document.getElementById("despertar-manualmente");
+const botonApagarAlarma = document.getElementById("apagar-alarma");
+const botonPosponerAlarma = document.getElementById("posponer-alarma");
+
+let temporizadorAlarma = null;
 
 // ESCRIBIR LA NARRACIÓN LETRA POR LETRA
 
