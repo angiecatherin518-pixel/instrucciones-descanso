@@ -1015,6 +1015,7 @@ body {
     transform: scale(0.15);
     transition: background 0.4s ease;
     pointer-events: none;
+    transform-origin: center center;
 }
 
 #texto-colores {
@@ -1602,26 +1603,21 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-
     transform: translate(-50%, -50%);
+    z-index: 10;
 
-    display: block;
-    width: max-content;
-    max-width: 90vw;
-
-    color: white;
-    font-family: Arial, sans-serif;
-    font-size: clamp(13px, 4vw, 22px);
-    font-weight: bold;
-    letter-spacing: 3px;
+    width: 90%;
     text-align: center;
+    font-size: clamp(13px, 3.5vw, 19px);
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: white;
     text-shadow: 0 2px 8px #0008;
 
-    white-space: nowrap;
-    opacity: 0;
-
     pointer-events: none;
+    opacity: 0;
 }
+
 /* OCULTAR SELECTOR CUANDO SE ACTIVA LA CÁMARA */
 
 .selector-camara[hidden] {

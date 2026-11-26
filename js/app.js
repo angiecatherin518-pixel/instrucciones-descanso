@@ -1377,7 +1377,6 @@ botonTerminarRuido.addEventListener("click", terminarRitualRuido);
 // SALIR DEL RITUAL
 
 function salirDeRuido() {
-    detenerSonidoRuido();
 
     document.getElementById("ritual-ruido")
         .classList.remove("activa");
@@ -1435,6 +1434,8 @@ function comenzarSueno() {
 // MOSTRAR LA ALARMA
 
 function mostrarAlarma() {
+
+    detenerSonidoRuido();
 
     clearTimeout(temporizadorAlarma);
 
