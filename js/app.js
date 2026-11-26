@@ -1922,6 +1922,7 @@ function seguirDescansando() {
 botonDormir.addEventListener("click", comenzarSueno);
 
 
+
 // BOTONES DE LA ALARMA
 
 botonApagarAlarma.addEventListener("click", levantarse);
