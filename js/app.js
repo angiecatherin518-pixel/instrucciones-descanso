@@ -1775,7 +1775,6 @@ async function escribirFinal(elemento, parrafos, boton) {
     boton.hidden = false;
 }
 
-const botonDespertar = document.getElementById("despertar-manualmente");
 const botonApagarAlarma = document.getElementById("apagar-alarma");
 const botonPosponerAlarma = document.getElementById("posponer-alarma");
 
@@ -1921,11 +1920,6 @@ function seguirDescansando() {
 // BOTÓN PARA DORMIR
 
 botonDormir.addEventListener("click", comenzarSueno);
-
-
-// BOTÓN PARA PASAR A LA ALARMA ANTES
-
-botonDespertar.addEventListener("click", mostrarAlarma);
 
 
 // BOTONES DE LA ALARMA
