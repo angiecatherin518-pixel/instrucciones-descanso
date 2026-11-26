@@ -171,8 +171,9 @@ function iniciarRitual(cama) {
     pantallaHabitacion.classList.remove("activa");
     document.getElementById("ritual-respiracion").classList.add("activa");
 
-    reiniciarRespiracion();
     prepararMicrofono();
+
+    reiniciarRespiracion();
 
     return;
 }

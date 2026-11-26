@@ -651,7 +651,12 @@ body {
     z-index: 2;
     bottom: 85px;
     left: 8%;
-    font-size: 48px;
+
+    width: 75px;
+    height: auto;
+    display: block;
+    object-fit: contain;
+
     transform: translateY(0) scaleX(-1);
 }
 
