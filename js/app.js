@@ -1315,11 +1315,17 @@ function terminarRitualRuido() {
 }
 
 
-// APAGAR Y LIBERAR EL AUDIO
+// APAGAR Y LIBERAR COMPLETAMENTE EL AUDIO
 
 function detenerSonidoRuido() {
+
     window.removeEventListener(
         "deviceorientation",
+        cambiarIntensidadPorInclinacion
+    );
+
+    window.removeEventListener(
+        "deviceorientationabsolute",
         cambiarIntensidadPorInclinacion
     );
 
@@ -1329,18 +1335,35 @@ function detenerSonidoRuido() {
         try {
             fuenteRuido.stop();
         } catch (error) {
-            // La fuente ya estaba detenida.
+            console.log("El sonido ya estaba detenido.");
         }
+
+        try {
+            fuenteRuido.disconnect();
+        } catch (error) {}
 
         fuenteRuido = null;
     }
 
-    if (contextoRuido) {
-        contextoRuido.close();
-        contextoRuido = null;
+    if (gananciaRuido) {
+        try {
+            gananciaRuido.disconnect();
+        } catch (error) {}
+
+        gananciaRuido = null;
     }
 
-    gananciaRuido = null;
+    if (contextoRuido) {
+        const contextoAnterior = contextoRuido;
+
+        contextoRuido = null;
+
+        contextoAnterior.close().catch((error) => {
+            console.log("No se pudo cerrar el audio:", error);
+        });
+    }
+
+    volumenActual = 0.35;
 }
 
 
@@ -1475,13 +1498,32 @@ escenaAlarma.addEventListener("pointerup", (evento) => {
 });
 
 
-// VOLVER A COMENZAR LA EXPERIENCIA
+// REINICIAR TODA LA EXPERIENCIA
 
 document.querySelectorAll(".reiniciar-experiencia")
     .forEach((boton) => {
 
         boton.addEventListener("click", () => {
+
+            // Detener el ruido blanco.
+            detenerSonidoRuido();
+
+            // Detener el micrófono.
+            if (typeof detenerMicrofono === "function") {
+                detenerMicrofono();
+            }
+
+            // Detener la cámara.
+            if (typeof detenerCamaraColores === "function") {
+                detenerCamaraColores();
+            }
+
+            // Cancelar la alarma pendiente.
+            clearTimeout(temporizadorAlarma);
+
+            // Reiniciar la página.
             window.location.reload();
+
         });
 
     });
