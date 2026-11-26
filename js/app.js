@@ -19,6 +19,7 @@ const mensaje = document.getElementById("mensaje");
 const botonContinuar = document.getElementById("continuar");
 const pantallaInicio = document.getElementById("inicio");
 const pantallaHabitacion = document.getElementById("habitacion");
+const audioCobija = document.getElementById("audio-cobija");
 
 // AUDIOS DE LA ESCENA INICIAL
 
@@ -311,6 +312,15 @@ function activarAnimacionCama(cama) {
     // Ocultar la indicación mientras se reproduce el GIF
     cama.classList.add("animando");
 
+    // Reproducir el sonido de la cobija
+    if (audioCobija) {
+        audioCobija.pause();
+        audioCobija.currentTime = 0;
+        audioCobija.play().catch(error => {
+            console.log("No se pudo reproducir el sonido de la cobija:", error);
+        });
+    }
+
     // Activar el GIF
     ilustracion.src = ilustracion.dataset.gif;
 
@@ -321,7 +331,6 @@ function activarAnimacionCama(cama) {
         iniciarRitual(cama);
     }, duracionGifCama);
 }
-
 
 // DETECTAR EL DESLIZAMIENTO
 camas.forEach((cama) => {
@@ -1454,9 +1463,7 @@ document.getElementById("continuar-colores")
    INTERACCIÓN: RUIDO BLANCO
 ================================= */
 
-let contextoRuido = null;
-let fuenteRuido = null;
-let gananciaRuido = null;
+const audioRuidoBlanco = document.getElementById("audio-ruido-blanco");
 let volumenActual = 0.35;
 
 const pensamientoRuido = document.getElementById("pensamiento-ruido");
@@ -1518,40 +1525,11 @@ function reiniciarRuido() {
 // CREAR RUIDO BLANCO
 
 function crearRuidoBlanco() {
-    const AudioContextClass =
-        window.AudioContext || window.webkitAudioContext;
+    if (!audioRuidoBlanco) return;
 
-    contextoRuido = new AudioContextClass();
-
-    const duracion = 2;
-    const frecuencia = contextoRuido.sampleRate;
-
-    const buffer = contextoRuido.createBuffer(
-        1,
-        frecuencia * duracion,
-        frecuencia
-    );
-
-    const datos = buffer.getChannelData(0);
-
-    // Crear una señal de ruido blanco
-    for (let i = 0; i < datos.length; i++) {
-        datos[i] = Math.random() * 2 - 1;
-    }
-
-    fuenteRuido = contextoRuido.createBufferSource();
-    fuenteRuido.buffer = buffer;
-    fuenteRuido.loop = true;
-
-    gananciaRuido = contextoRuido.createGain();
-    gananciaRuido.gain.value = volumenActual;
-
-    fuenteRuido.connect(gananciaRuido);
-    gananciaRuido.connect(contextoRuido.destination);
-
-    fuenteRuido.start();
+    audioRuidoBlanco.volume = volumenActual;
+    audioRuidoBlanco.currentTime = 0;
 }
-
 
 // ENCENDER LA RADIO
 
@@ -1569,7 +1547,7 @@ async function encenderRadio() {
         // Crear y activar el sonido.
         crearRuidoBlanco();
 
-        await contextoRuido.resume();
+        await audioRuidoBlanco.play();
 
         document.getElementById("radio-ruido")
             .classList.add("encendida");
@@ -1691,12 +1669,8 @@ function cambiarVolumen(porcentaje) {
         Math.min(1, porcentaje / 100)
     );
 
-    if (gananciaRuido && contextoRuido) {
-        gananciaRuido.gain.setTargetAtTime(
-            volumenActual,
-            contextoRuido.currentTime,
-            0.08
-        );
+    if (audioRuidoBlanco) {
+    audioRuidoBlanco.volume = volumenActual;
     }
 
     volumenRuido.value = porcentaje;
@@ -1711,7 +1685,7 @@ function cambiarVolumen(porcentaje) {
 
 function cambiarIntensidadPorInclinacion(evento) {
 
-    if (!gananciaRuido) return;
+    if (!audioRuidoBlanco || audioRuidoBlanco.paused) return;
 
     if (evento.gamma === null || evento.gamma === undefined) {
         return;
@@ -1742,7 +1716,7 @@ function terminarRitualRuido() {
     clearInterval(temporizadorPensamientosRuido);
     temporizadorPensamientosRuido = null;
 
-    if (!contextoRuido) return;
+    if (!audioRuidoBlanco || audioRuidoBlanco.paused) return;
 
     registrarRitualCompletado("ruido");
 
@@ -1764,7 +1738,6 @@ function terminarRitualRuido() {
 // APAGAR Y LIBERAR COMPLETAMENTE EL AUDIO
 
 function detenerSonidoRuido() {
-
     clearInterval(temporizadorPensamientosRuido);
     temporizadorPensamientosRuido = null;
 
@@ -1780,36 +1753,10 @@ function detenerSonidoRuido() {
 
     orientacionActiva = false;
 
-    if (fuenteRuido) {
-        try {
-            fuenteRuido.stop();
-        } catch (error) {
-            console.log("El sonido ya estaba detenido.");
-        }
-
-        try {
-            fuenteRuido.disconnect();
-        } catch (error) {}
-
-        fuenteRuido = null;
-    }
-
-    if (gananciaRuido) {
-        try {
-            gananciaRuido.disconnect();
-        } catch (error) {}
-
-        gananciaRuido = null;
-    }
-
-    if (contextoRuido) {
-        const contextoAnterior = contextoRuido;
-
-        contextoRuido = null;
-
-        contextoAnterior.close().catch((error) => {
-            console.log("No se pudo cerrar el audio:", error);
-        });
+    if (audioRuidoBlanco) {
+        audioRuidoBlanco.pause();
+        audioRuidoBlanco.currentTime = 0;
+        audioRuidoBlanco.volume = 0.35;
     }
 
     volumenActual = 0.35;
