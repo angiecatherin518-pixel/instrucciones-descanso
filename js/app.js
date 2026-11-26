@@ -972,6 +972,8 @@ function salirDeRespiracion() {
 
     pantallaHabitacion.classList.add("activa");
 
+    restaurarCama("respiracion");
+
     document.querySelector('[data-ritual="respiracion"]')
         .classList.remove("deslizada");
 }
@@ -1337,6 +1339,8 @@ function salirDeColores() {
 
     pantallaColores.classList.remove("activa", "completo");
     pantallaHabitacion.classList.add("activa");
+
+    restaurarCama("respiracion");
 
     document.querySelector('[data-ritual="colores"]')
         .classList.remove("deslizada");
@@ -1730,6 +1734,8 @@ function salirDeRuido() {
         .classList.remove("activa");
 
     pantallaHabitacion.classList.add("activa");
+
+    restaurarCama("respiracion");
 
     document.querySelector('[data-ritual="ruido"]')
         .classList.remove("deslizada");
