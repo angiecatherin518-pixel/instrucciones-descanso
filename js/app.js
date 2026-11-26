@@ -35,7 +35,13 @@ function iniciarAudiosInicio() {
     const reproducciones = audios.map((audio) => {
         if (!audio) return Promise.resolve(false);
 
-        audio.volume = 0.5;
+        if (audio === audioRespiracion) {
+           audio.volume = 0.5;
+        }
+
+        if (audio === audioReloj) {
+           audio.volume = 0.30;
+        }
 
         return audio.play()
             .then(() => true)
@@ -50,14 +56,11 @@ function iniciarAudiosInicio() {
 }
 
 function detenerAudiosInicio() {
-    [audioRespiracion, audioReloj].forEach((audio) => {
-        if (audio) {
-            audio.pause();
-            audio.currentTime = 0;
-        }
-    });
-
-    audiosInicioIniciados = false;
+    // La respiración agitada termina al salir de la escena inicial.
+    if (audioRespiracion) {
+        audioRespiracion.pause();
+        audioRespiracion.currentTime = 0;
+    }
 }
 
 // Intentar reproducir automáticamente al abrir la página.
@@ -66,6 +69,41 @@ iniciarAudiosInicio();
 // Si el navegador bloquea la reproducción automática,
 // iniciar los dos audios con el primer toque.
 botonContinuar.addEventListener("click", iniciarAudiosInicio);
+
+// DISMINUIR PROGRESIVAMENTE EL VOLUMEN DEL RELOJ
+
+let temporizadorFadeReloj = null;
+
+function bajarVolumenReloj(cantidadRituales) {
+    if (!audioReloj) return;
+
+    const volumenes = [0.24, 0.16, 0.08, 0.02];
+    const volumenFinal = volumenes[cantidadRituales - 1];
+
+    if (volumenFinal === undefined) return;
+
+    clearInterval(temporizadorFadeReloj);
+
+    const volumenInicial = audioReloj.volume;
+    const duracion = 2000;
+    const momentoInicio = performance.now();
+
+    temporizadorFadeReloj = setInterval(() => {
+        const progreso = Math.min(
+            (performance.now() - momentoInicio) / duracion,
+            1
+        );
+
+        audioReloj.volume =
+            volumenInicial +
+            (volumenFinal - volumenInicial) * progreso;
+
+        if (progreso >= 1) {
+            clearInterval(temporizadorFadeReloj);
+            temporizadorFadeReloj = null;
+        }
+    }, 30);
+}
 
 
 /* =================================
@@ -169,6 +207,8 @@ const botonDormir = document.getElementById("boton-dormir");
 function registrarRitualCompletado(nombre) {
 
     ritualesCompletados.add(nombre);
+
+    bajarVolumenReloj(ritualesCompletados.size);
 
     mensajeRitual.textContent =
         `Has completado ${ritualesCompletados.size} de 4 rituales.`;
@@ -1921,6 +1961,14 @@ function cambiarPantalla(actual, siguiente) {
 // COMENZAR LA TRANSICIÓN HACIA EL SUEÑO
 
 function comenzarSueno() {
+
+        // El reloj deja de sonar cuando la persona comienza a dormir.
+    clearInterval(temporizadorFadeReloj);
+
+    if (audioReloj) {
+        audioReloj.pause();
+        audioReloj.currentTime = 0;
+    }
 
     // Limpiar temporizadores anteriores.
     temporizadorNarracion.forEach(clearTimeout);
