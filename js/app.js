@@ -200,7 +200,7 @@ function iniciarRitual(cama) {
 
 
 // DURACIÓN DE LA ANIMACIÓN DE LA COBIJA
-const duracionGifCama = 2000;
+const duracionGifCama = 1500;
 
 // ACTIVAR LA ANIMACIÓN
 function activarAnimacionCama(cama) {
