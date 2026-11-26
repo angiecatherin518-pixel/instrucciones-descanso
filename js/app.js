@@ -951,6 +951,28 @@ let camaraCubierta = false;
 let camaraElegida = "environment";
 
 const nombreColor = document.getElementById("nombre-color");
+const pensamientoColores = document.getElementById("pensamiento-colores");
+
+const pensamientosColores = [
+    {
+        progreso: 0.05,
+        texto: "Pensar en un color me hace pensar en mi propósito en el mundo…"
+    },
+    {
+        progreso: 0.35,
+        texto: "¿Qué pasa si solo existo sin un propósito claro? ¿Por qué todo debe tener un propósito, un fin, una funcionalidad?"
+    },
+    {
+        progreso: 0.70,
+        texto: "¿Y si solo estamos para ser? Soy, me transformo y vuelvo a ser…"
+    },
+    {
+        progreso: 1,
+        texto: "Bah! Esto no da tanto sueño… creo."
+    }
+];
+
+let pensamientoColorActual = -1;
 
 const selectorCamaraColores =
     document.getElementById("selector-camara-colores");
@@ -1051,6 +1073,10 @@ function reiniciarColores() {
     selectorCamaraColores.hidden = false;
     botonCamaraColores.disabled = false;
     botonCamaraColores.textContent = "Activar cámara";
+
+    pensamientoColorActual = -1;
+    pensamientoColores.textContent = "";
+    pensamientoColores.classList.remove("visible");
 
     finalColores.classList.remove("visible");
 }
@@ -1191,6 +1217,20 @@ function actualizarCirculoColor() {
 
     const escala = 0.15 + progresoColor * 8;
 
+    pensamientosColores.forEach((pensamiento, indice) => {
+    if (
+        progresoColor >= pensamiento.progreso &&
+        pensamientoColorActual < indice
+    ) {
+        pensamientoColorActual = indice;
+
+        mostrarPensamiento(
+            pensamientoColores,
+            pensamiento.texto
+        );
+    }
+});
+
     circuloColor.style.transform =
         `scale(${escala})`;
 
@@ -1272,6 +1312,18 @@ let contextoRuido = null;
 let fuenteRuido = null;
 let gananciaRuido = null;
 let volumenActual = 0.35;
+
+const pensamientoRuido = document.getElementById("pensamiento-ruido");
+
+const pensamientosRuido = [
+    "Silenciar mis pensamientos autodestructivos no es suficiente.",
+    "Este ruido despierta mi conciencia. ¿Quién soy en el mundo?",
+    "¿Soy realmente yo quien decide o estoy alimentando sin querer las expectativas de un otro?"
+];
+
+let temporizadorPensamientosRuido = null;
+let pensamientoRuidoActual = 0;
+
 let orientacionActiva = false;
 
 const botonActivarRuido = document.getElementById("activar-ruido");
@@ -1395,6 +1447,36 @@ async function encenderRadio() {
 
         botonActivarRuido.disabled = false;
     }
+
+    iniciarPensamientosRuido();
+
+}
+
+function iniciarPensamientosRuido() {
+    clearInterval(temporizadorPensamientosRuido);
+
+    pensamientoRuidoActual = 0;
+
+    pensamientoRuido.textContent = "";
+
+    mostrarPensamiento(
+        pensamientoRuido,
+        pensamientosRuido[pensamientoRuidoActual]
+    );
+
+    temporizadorPensamientosRuido = setInterval(() => {
+        pensamientoRuidoActual++;
+
+        if (pensamientoRuidoActual < pensamientosRuido.length) {
+            mostrarPensamiento(
+                pensamientoRuido,
+                pensamientosRuido[pensamientoRuidoActual]
+            );
+        } else {
+            clearInterval(temporizadorPensamientosRuido);
+            temporizadorPensamientosRuido = null;
+        }
+    }, 6500);
 }
 
 
@@ -1510,6 +1592,10 @@ function cambiarIntensidadPorInclinacion(evento) {
 // ENCONTRAR LA INTENSIDAD IDEAL
 
 function terminarRitualRuido() {
+
+    clearInterval(temporizadorPensamientosRuido);
+    temporizadorPensamientosRuido = null;
+
     if (!contextoRuido) return;
 
     registrarRitualCompletado("ruido");
@@ -1532,6 +1618,9 @@ function terminarRitualRuido() {
 // APAGAR Y LIBERAR COMPLETAMENTE EL AUDIO
 
 function detenerSonidoRuido() {
+
+    clearInterval(temporizadorPensamientosRuido);
+    temporizadorPensamientosRuido = null;
 
     window.removeEventListener(
         "deviceorientation",
