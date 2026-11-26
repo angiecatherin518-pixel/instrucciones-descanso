@@ -1918,35 +1918,18 @@ function seguirDescansando() {
 
 
 // BOTÓN PARA DORMIR
-
-botonDormir.addEventListener("click", comenzarSueno);
-
-
+if (botonDormir) {
+    botonDormir.addEventListener("click", comenzarSueno);
+}
 
 // BOTONES DE LA ALARMA
+if (botonApagarAlarma) {
+    botonApagarAlarma.addEventListener("click", levantarse);
+}
 
-botonApagarAlarma.addEventListener("click", levantarse);
-
-botonPosponerAlarma.addEventListener("click", seguirDescansando);
-
-
-// TAMBIÉN SE PUEDE APAGAR DESLIZANDO HACIA ABAJO
-
-let inicioDeslizamientoAlarma = 0;
-
-escenaAlarma.addEventListener("pointerdown", (evento) => {
-    inicioDeslizamientoAlarma = evento.clientY;
-});
-
-escenaAlarma.addEventListener("pointerup", (evento) => {
-
-    const distancia =
-        evento.clientY - inicioDeslizamientoAlarma;
-
-    if (distancia > 70) {
-        levantarse();
-    }
-});
+if (botonPosponerAlarma) {
+    botonPosponerAlarma.addEventListener("click", seguirDescansando);
+}
 
 
 // REINICIAR TODA LA EXPERIENCIA
