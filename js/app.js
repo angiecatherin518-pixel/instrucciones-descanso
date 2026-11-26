@@ -607,6 +607,9 @@ const zonaRespiracion = document.getElementById("zona-respiracion");
 const esferaRespiracion = document.getElementById("esfera-respiracion");
 const textoRespiracion = document.getElementById("texto-respiracion");
 
+const audioInhalar = document.getElementById("audio-inhalar");
+const audioExhalar = document.getElementById("audio-exhalar");
+
 const numeroRespiraciones = document.getElementById("numero-respiraciones");
 const indicacionGesto = document.getElementById("indicacion-gesto");
 const mensajeRespiracion = document.getElementById("mensaje-respiracion");
@@ -622,6 +625,16 @@ const pensamientosRespiracion = {
     4: "¡Pero qué estoy diciendo! ¡Rápido, rápido, duérmeteeee!"
 };
 
+// DETENER LOS AUDIOS DE RESPIRACIÓN
+
+function detenerAudiosRespiracion() {
+    [audioInhalar, audioExhalar].forEach(audio => {
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    });
+}
 
 // PREPARAR EL MICRÓFONO AL ENTRAR
 
@@ -689,6 +702,10 @@ async function prepararMicrofono() {
 // REINICIAR EL RITUAL
 
 function reiniciarRespiracion() {
+
+    function reiniciarRespiracion() {
+    detenerAudiosRespiracion();
+
     detenerMicrofono();
 
     respiracionesCompletadas = 0;
@@ -722,6 +739,12 @@ function comenzarInhalacion() {
     if (!microfonoListo || faseRespiracion !== "lista") return;
 
     faseRespiracion = "inhalando";
+
+    // Reproducir el sonido de inhalación
+if (audioInhalar) {
+    audioInhalar.currentTime = 0;
+    audioInhalar.play().catch(error => console.log(error));
+}
 
     indicacionGesto.textContent =
         "Desliza lentamente hacia abajo";
@@ -766,9 +789,16 @@ function comenzarRetencion() {
 
             cuentaRegresiva.textContent = "";
 
-            faseRespiracion = "exhalando";
+           faseRespiracion = "exhalando";
 
-            textoRespiracion.textContent = "EXHALA";
+// Detener el sonido de inhalación
+if (audioInhalar) {
+    audioInhalar.pause();
+    audioInhalar.currentTime = 0;
+}
+
+
+textoRespiracion.textContent = "EXHALA";
 
             indicacionGesto.textContent =
                 "Sin levantar el dedo, sopla hacia el micrófono";
@@ -845,9 +875,15 @@ function iniciarDeteccionSoplido() {
                 // Un soplido sostenido durante 180 ms es suficiente.
                 if (Date.now() - momentoSoplido >= 180) {
 
-                    soplidoDetectado = true;
+    soplidoDetectado = true;
 
-                    textoRespiracion.textContent = "LISTO";
+    // Reproducir el sonido justo al detectar el soplido
+    if (audioExhalar) {
+        audioExhalar.currentTime = 0;
+        audioExhalar.play().catch(error => console.log(error));
+    }
+
+    textoRespiracion.textContent = "LISTO";
 
                     indicacionGesto.textContent =
                         "Ahora puedes soltar tu dedo.";
@@ -959,6 +995,8 @@ zonaRespiracion.addEventListener("pointercancel", () => {
 // CANCELAR SI SUELTA ANTES DE SOPLAR
 
 function cancelarRespiracion() {
+
+    detenerAudiosRespiracion();
     clearInterval(intervaloCuenta);
 
     if (animacionMicrofono !== null) {
@@ -987,6 +1025,10 @@ function cancelarRespiracion() {
 // COMPLETAR UNA RESPIRACIÓN
 
 function completarRespiracion() {
+
+function completarRespiracion() {
+    detenerAudiosRespiracion();
+
     if (
         faseRespiracion !== "exhalando" ||
         !soplidoDetectado
@@ -1073,6 +1115,9 @@ function detenerMicrofono() {
 // SALIR DEL RITUAL
 
 function salirDeRespiracion() {
+
+    detenerAudiosRespiracion();
+    
     clearInterval(intervaloCuenta);
 
     detenerMicrofono();
@@ -2010,7 +2055,7 @@ function comenzarSueno() {
     // La alarma llega después de un momento de sueño.
     temporizadorAlarma = setTimeout(() => {
         mostrarAlarma();
-    }, 20500);
+    }, 32000);
 }
 
 
@@ -2097,26 +2142,31 @@ if (botonDormir) {
     botonDormir.addEventListener("click", comenzarSueno);
 }
 
+
 // BOTONES DE LA ALARMA
 if (botonApagarAlarma) {
+    botonApagarAlarma.addEventListener("click", () => {
 
-    if (audioAlarma) {
-    audioAlarma.pause();
-    audioAlarma.currentTime = 0;
-}
-    botonApagarAlarma.addEventListener("click", levantarse);
+        if (audioAlarma) {
+            audioAlarma.pause();
+            audioAlarma.currentTime = 0;
+        }
+
+        levantarse();
+    });
 }
 
 if (botonPosponerAlarma) {
+    botonPosponerAlarma.addEventListener("click", () => {
 
-if (audioAlarma) {
-    audioAlarma.pause();
-    audioAlarma.currentTime = 0;
+        if (audioAlarma) {
+            audioAlarma.pause();
+            audioAlarma.currentTime = 0;
+        }
+
+        seguirDescansando();
+    });
 }
-
-    botonPosponerAlarma.addEventListener("click", seguirDescansando);
-}
-
 
 // REINICIAR TODA LA EXPERIENCIA
 
