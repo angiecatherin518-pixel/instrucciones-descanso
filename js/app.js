@@ -20,6 +20,9 @@ const botonContinuar = document.getElementById("continuar");
 const pantallaInicio = document.getElementById("inicio");
 const pantallaHabitacion = document.getElementById("habitacion");
 const audioCobija = document.getElementById("audio-cobija");
+const audioBostezo = document.getElementById("audio-bostezo");
+const audioRonquido = document.getElementById("audio-ronquido");
+const audioCancionCuna = document.getElementById("audio-cancion-cuna");
 
 // AUDIOS DE LA ESCENA INICIAL
 
@@ -1464,7 +1467,7 @@ document.getElementById("continuar-colores")
 ================================= */
 
 const audioRuidoBlanco = document.getElementById("audio-ruido-blanco");
-let volumenActual = 0.35;
+let volumenActual = 0.60;
 
 const pensamientoRuido = document.getElementById("pensamiento-ruido");
 
@@ -1499,12 +1502,12 @@ const finalRuido = document.getElementById("final-ruido");
 function reiniciarRuido() {
     detenerSonidoRuido();
 
-    volumenActual = 0.35;
+    volumenActual = 0.60;
 
-    volumenRuido.value = 35;
-    textoNivelRuido.textContent = "Intensidad: 35%";
+    volumenRuido.value = 60;
+    textoNivelRuido.textContent = "Intensidad: 60%";
 
-    indicadorNivelRuido.style.width = "35%";
+    indicadorNivelRuido.style.width = "60%";
     indicadorInclinacion.style.left = "50%";
 
     mensajeRuido.textContent =
@@ -1756,7 +1759,7 @@ function detenerSonidoRuido() {
     if (audioRuidoBlanco) {
         audioRuidoBlanco.pause();
         audioRuidoBlanco.currentTime = 0;
-        audioRuidoBlanco.volume = 0.35;
+        audioRuidoBlanco.volume = 0.60;
     }
 
     volumenActual = 0.35;
@@ -1911,7 +1914,7 @@ function comenzarSueno() {
 
     detenerSonidoRuido();
 
-        // El reloj deja de sonar cuando la persona comienza a dormir.
+    // Apagar el reloj.
     clearInterval(temporizadorFadeReloj);
 
     if (audioReloj) {
@@ -1919,50 +1922,89 @@ function comenzarSueno() {
         audioReloj.currentTime = 0;
     }
 
+    // Detener audios de una posible reproducción anterior.
+    [audioBostezo, audioRonquido, audioCancionCuna].forEach(audio => {
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    });
+
     // Limpiar temporizadores anteriores.
     temporizadorNarracion.forEach(clearTimeout);
     temporizadorNarracion = [];
 
     clearInterval(temporizadorEscritura);
 
-    // Preparar los textos.
+    // Preparar la escena.
     narracionSueno.textContent = "";
     ultimoPensamientoSueno.hidden = true;
     mensajeSueno.hidden = true;
     zzzSueno.hidden = true;
 
-    // Mostrar la escena del cielo y comenzar la narración.
+    ultimoPensamientoSueno.classList.remove("aparecer-sueno");
+    mensajeSueno.classList.remove("aparecer-sueno");
+    zzzSueno.classList.remove("aparecer-sueno");
+
+    // Mostrar la escena del sueño.
     cambiarPantalla(pantallaHabitacion, escenaSueno);
 
-    const textoPrincipal =
-        "Ser, no ser, trabajar para ser, descansar para producir y repetir el ciclo…";
+    // PRIMER BOSTEZO
+    if (audioBostezo) {
+        audioBostezo.currentTime = 0;
+        audioBostezo.play().catch(error => console.log(error));
+    }
 
-    escribirNarracion(narracionSueno, textoPrincipal, 75);
-
-    // Después de terminar la primera reflexión.
+    // Comienza la reflexión después del bostezo.
     temporizadorNarracion.push(setTimeout(() => {
+
+        const textoPrincipal =
+            "Ser, no ser, trabajar para ser, descansar para producir y repetir el ciclo…";
+
+        escribirNarracion(narracionSueno, textoPrincipal, 75);
+
+    }, 1300));
+
+    // SEGUNDO BOSTEZO
+    temporizadorNarracion.push(setTimeout(() => {
+
+        if (audioBostezo) {
+            audioBostezo.currentTime = 0;
+            audioBostezo.play().catch(error => console.log(error));
+        }
+
+    }, 8000));
+
+    // Aparece el último pensamiento.
+    temporizadorNarracion.push(setTimeout(() => {
+
+        ultimoPensamientoSueno.textContent = "Yo solo quiero…";
 
         ultimoPensamientoSueno.hidden = false;
         ultimoPensamientoSueno.classList.add("aparecer-sueno");
 
-    }, 6500));
+    }, 9200));
 
-    // Aparece el mensaje de descanso.
+    // Comienzan los ronquidos y la canción de cuna.
     temporizadorNarracion.push(setTimeout(() => {
 
-        mensajeSueno.hidden = false;
+        if (audioRonquido) {
+            audioRonquido.volume = 0.35;
+            audioRonquido.play().catch(error => console.log(error));
+        }
 
-        mensajeSueno.classList.add("aparecer-sueno");
-
-    }, 8500));
-
-    // Finalmente aparecen los ronquidos.
-    temporizadorNarracion.push(setTimeout(() => {
+        if (audioCancionCuna) {
+            audioCancionCuna.volume = 0.45;
+            audioCancionCuna.play().catch(error => console.log(error));
+        }
 
         zzzSueno.hidden = false;
         zzzSueno.classList.add("aparecer-sueno");
 
-    }, 10500));
+        mensajeSueno.hidden = false;
+        mensajeSueno.classList.add("aparecer-sueno");
+
+    }, 11000));
 
     // La alarma llega después de un momento de sueño.
     temporizadorAlarma = setTimeout(() => {
@@ -1974,6 +2016,16 @@ function comenzarSueno() {
 // MOSTRAR LA ALARMA
 
 function mostrarAlarma() {
+
+    if (audioRonquido) {
+    audioRonquido.pause();
+    audioRonquido.currentTime = 0;
+}
+
+if (audioCancionCuna) {
+    audioCancionCuna.pause();
+    audioCancionCuna.currentTime = 0;
+}
 
     detenerSonidoRuido();
 
