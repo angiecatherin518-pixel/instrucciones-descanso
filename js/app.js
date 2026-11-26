@@ -10,61 +10,51 @@ const mensajes = [
 ];
 
 let mensajeActual = 0;
+let escribiendo = false;
 
 // ELEMENTOS DE LA PÁGINA
 
 const mensaje = document.getElementById("mensaje");
 const botonContinuar = document.getElementById("continuar");
-
 const pantallaInicio = document.getElementById("inicio");
 const pantallaHabitacion = document.getElementById("habitacion");
 
-// CONTROL DE LOS CUATRO RITUALES
+// ESCRIBIR EL SIGUIENTE FRAGMENTO SIN BORRAR EL ANTERIOR
 
-const ritualesCompletados = new Set();
-
-const botonDormir = document.getElementById("boton-dormir");
-
-function registrarRitualCompletado(nombre) {
-
-    ritualesCompletados.add(nombre);
-
-    mensajeRitual.textContent =
-        `Has completado ${ritualesCompletados.size} de 4 rituales.`;
-
-    if (ritualesCompletados.size === 4) {
-        botonDormir.hidden = false;
-
-        mensajeRitual.textContent =
-            "Has completado los cuatro rituales. Ya puedes descansar.";
-    }
-}
-
-// AVANZAR EN LA NARRACIÓN
-
-botonContinuar.addEventListener("click", () => {
+function escribirSiguienteMensaje() {
+    if (escribiendo) return;
 
     mensajeActual++;
 
     if (mensajeActual < mensajes.length) {
+        escribiendo = true;
+        botonContinuar.disabled = true;
 
-        mensaje.textContent = mensajes[mensajeActual];
+        const nuevoTexto = " " + mensajes[mensajeActual];
+        let posicion = 0;
 
-        // Reinicia la animación del texto
-        mensaje.style.animation = "none";
-        void mensaje.offsetWidth;
-        mensaje.style.animation = "aparecer 1s ease";
+        function escribirLetra() {
+            if (posicion < nuevoTexto.length) {
+                mensaje.textContent += nuevoTexto.charAt(posicion);
+                posicion++;
+
+                setTimeout(escribirLetra, 35);
+            } else {
+                escribiendo = false;
+                botonContinuar.disabled = false;
+            }
+        }
+
+        escribirLetra();
 
     } else {
-
-        // Pasar a la habitación
-
         pantallaInicio.classList.remove("activa");
         pantallaHabitacion.classList.add("activa");
-
     }
+}
 
-});
+botonContinuar.addEventListener("click", escribirSiguienteMensaje);
+
 
 // SELECCIÓN DE LAS CAMAS Y DESLIZAMIENTO DE COBIJAS
 

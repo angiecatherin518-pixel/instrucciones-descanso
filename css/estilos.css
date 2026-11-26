@@ -114,7 +114,7 @@ body {
 .texto-guia p {
     font-size: clamp(21px, 6vw, 26px);
     line-height: 1.6;
-    animation: aparecer 1s ease;
+    animation: none;
 }
 
 .boton-continuar {
