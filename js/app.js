@@ -309,7 +309,7 @@ function programarSaltoOveja() {
         instruccionOvejas.textContent =
             "¡Ahora! Cuenta la oveja en lo más alto del salto.";
 
-    }, 640);
+    }, 500);
 
     // Cerrar la oportunidad de contar
     temporizadorCerrarConteo = setTimeout(() => {
@@ -323,7 +323,7 @@ function programarSaltoOveja() {
         instruccionOvejas.textContent =
             "Espera con calma el siguiente salto.";
 
-    }, 1000);
+    }, 1400);
 
     // Programar el siguiente salto
     temporizadorSiguienteSalto = setTimeout(() => {
