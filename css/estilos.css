@@ -172,7 +172,7 @@ body {
     color: #c0b9d8;
     font-family: Arial, sans-serif;
     letter-spacing: 4px;
-    font-size: 20px;
+    font-size: 30px;
     margin-bottom: 12px;
 }
 
@@ -651,7 +651,7 @@ body {
 }
 
 .oveja.saltando {
-    animation: salto-oveja 0.7s ease-in-out;
+    animation: salto-oveja 1.6s ease-in-out;
 }
 
 @keyframes salto-oveja {
@@ -659,11 +659,19 @@ body {
         transform: translate(0, 0) scaleX(-1);
     }
 
-    45% {
-        transform: translate(95px, -100px) scaleX(-1) rotate(-10deg);
+    40% {
+        transform: translate(80px, -100px) scaleX(-1) rotate(-8deg);
     }
 
-    75% {
+    50% {
+        transform: translate(105px, -110px) scaleX(-1) rotate(-10deg);
+    }
+
+    60% {
+        transform: translate(130px, -100px) scaleX(-1) rotate(-8deg);
+    }
+
+    80% {
         transform: translate(170px, 0) scaleX(-1);
     }
 
@@ -718,6 +726,11 @@ body {
     background: #34466c;
     color: #fff;
     font-size: 13px;
+}
+
+.boton-ovejas:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
 }
 
 .boton-volver {

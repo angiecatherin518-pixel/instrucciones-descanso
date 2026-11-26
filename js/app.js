@@ -40,8 +40,8 @@ function actualizarReloj(forzarAlarma = false) {
 
     // El tiempo comienza lentamente y acelera progresivamente.
     const minutosAvanzados = Math.floor(
-        segundosTranscurridos * 0.20 +
-        (segundosTranscurridos * segundosTranscurridos) / 400
+        segundosTranscurridos * 0.15 +
+        (segundosTranscurridos * segundosTranscurridos) / 600
     );
 
     // El reloj no supera las 06:59 antes de la alarma.
@@ -224,11 +224,19 @@ camas.forEach((cama) => {
 });
 
 
+
 /* =================================
    INTERACCIÓN: CONTAR OVEJAS
 ================================= */
 
 let ovejasContadas = 0;
+let puedeContarOveja = false;
+
+let temporizadorSiguienteSalto = null;
+let temporizadorAbrirConteo = null;
+let temporizadorCerrarConteo = null;
+
+const TOTAL_OVEJAS = 10;
 
 const oveja = document.getElementById("oveja");
 const numeroOvejas = document.getElementById("numero-ovejas");
@@ -236,61 +244,149 @@ const botonSaltar = document.getElementById("saltar-oveja");
 const instruccionOvejas = document.getElementById("instruccion-ovejas");
 const finalOvejas = document.getElementById("final-ovejas");
 
+// DETENER TODOS LOS TEMPORIZADORES
+
+function detenerSecuenciaOvejas() {
+    clearTimeout(temporizadorSiguienteSalto);
+    clearTimeout(temporizadorAbrirConteo);
+    clearTimeout(temporizadorCerrarConteo);
+
+    puedeContarOveja = false;
+}
+
+// REINICIAR EL RITUAL
+
 function reiniciarOvejas() {
+    detenerSecuenciaOvejas();
+
     ovejasContadas = 0;
 
     numeroOvejas.textContent = "0";
+
     instruccionOvejas.textContent =
-        "Toca la pantalla para ayudar a la oveja a saltar.";
+        "Observa el salto. Cuenta la oveja cuando llegue al punto más alto.";
 
     botonSaltar.style.display = "inline-block";
+    botonSaltar.disabled = true;
+    botonSaltar.textContent = "Espera el salto";
+
     finalOvejas.classList.remove("visible");
 
     oveja.classList.remove("saltando");
     oveja.style.left = "8%";
+
+    // Comenzar los saltos automáticos
+    programarSaltoOveja();
 }
 
+// HACER QUE LA OVEJA SALTE AUTOMÁTICAMENTE
+
+function programarSaltoOveja() {
+    if (ovejasContadas >= TOTAL_OVEJAS) return;
+
+    puedeContarOveja = false;
+
+    botonSaltar.disabled = true;
+    botonSaltar.textContent = "Espera el salto";
+
+    instruccionOvejas.textContent =
+        "Observa cómo salta la oveja...";
+
+    // Reiniciar la animación
+    oveja.classList.remove("saltando");
+    void oveja.offsetWidth;
+    oveja.classList.add("saltando");
+
+    // Habilitar el conteo cerca del punto más alto
+    temporizadorAbrirConteo = setTimeout(() => {
+        if (ovejasContadas >= TOTAL_OVEJAS) return;
+
+        puedeContarOveja = true;
+
+        botonSaltar.disabled = false;
+        botonSaltar.textContent = "Contar oveja";
+
+        instruccionOvejas.textContent =
+            "¡Ahora! Cuenta la oveja en lo más alto del salto.";
+
+    }, 640);
+
+    // Cerrar la oportunidad de contar
+    temporizadorCerrarConteo = setTimeout(() => {
+        if (!puedeContarOveja) return;
+
+        puedeContarOveja = false;
+
+        botonSaltar.disabled = true;
+        botonSaltar.textContent = "Espera el salto";
+
+        instruccionOvejas.textContent =
+            "Espera con calma el siguiente salto.";
+
+    }, 1000);
+
+    // Programar el siguiente salto
+    temporizadorSiguienteSalto = setTimeout(() => {
+        programarSaltoOveja();
+    }, 2600);
+}
+
+// CONTAR SOLAMENTE EN EL MOMENTO CORRECTO
+
 function hacerSaltarOveja() {
-    if (ovejasContadas >= 50) return;
+    if (!puedeContarOveja) {
+        instruccionOvejas.textContent =
+            "Todavía no. Espera a que la oveja llegue al punto más alto.";
+        return;
+    }
+
+    puedeContarOveja = false;
+
+    botonSaltar.disabled = true;
+    botonSaltar.textContent = "Muy bien";
 
     ovejasContadas++;
 
     numeroOvejas.textContent = ovejasContadas;
 
-    // Reiniciar la animación para permitir el siguiente salto
-    oveja.classList.remove("saltando");
-    void oveja.offsetWidth;
-    oveja.classList.add("saltando");
+    instruccionOvejas.textContent =
+        `Muy bien. Has contado ${ovejasContadas} de ${TOTAL_OVEJAS} ovejas.`;
 
-    if (ovejasContadas === 50) {
+    // FINALIZAR AL CONTAR LAS 10 OVEJAS
+
+    if (ovejasContadas === TOTAL_OVEJAS) {
+        detenerSecuenciaOvejas();
 
         registrarRitualCompletado("ovejas");
+
         instruccionOvejas.textContent =
-            "Has ayudado a saltar a las 50 ovejas.";
+            "Has contado las 10 ovejas. Ahora puedes descansar.";
 
         setTimeout(() => {
             botonSaltar.style.display = "none";
             finalOvejas.classList.add("visible");
-        }, 750);
+        }, 700);
     }
 }
 
+// EL BOTÓN ES LA ÚNICA FORMA DE CONTAR
+
 botonSaltar.addEventListener("click", hacerSaltarOveja);
 
-// También se puede tocar el paisaje para hacer saltar la oveja
-document.querySelector(".paisaje-ovejas").addEventListener(
-    "click",
-    hacerSaltarOveja
-);
+// REGRESAR A LA HABITACIÓN
 
-// Regresar a la habitación
 document.getElementById("volver-habitacion").addEventListener("click", () => {
+    detenerSecuenciaOvejas();
+
     document.getElementById("ritual-ovejas").classList.remove("activa");
     pantallaHabitacion.classList.add("activa");
 });
 
-// Continuar después de contar las ovejas
+// CONTINUAR DESPUÉS DE CONTAR LAS OVEJAS
+
 document.getElementById("continuar-ovejas").addEventListener("click", () => {
+    detenerSecuenciaOvejas();
+
     document.getElementById("ritual-ovejas").classList.remove("activa");
     pantallaHabitacion.classList.add("activa");
 });
