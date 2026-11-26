@@ -4,6 +4,14 @@
    DISEÑO MOBILE FIRST
 ================================= */
 
+:root {
+    --alice-blue: #E2ECF5;
+    --wisteria-blue: #A4A7E3;
+    --majorelle-blue: #6A4DD4;
+    --velvet-orchid: #6E3377;
+    --prussian-blue: #000229;
+}
+
 /* CONFIGURACIÓN GENERAL */
 
 * {
@@ -310,9 +318,10 @@ body {
     font-size: 11px;
     text-align: center;
 
-    transition: transform 0.35s ease;
-                opacity: 0.3s ease;
-                visibility: 0.35s ease;
+    transition:
+    transform 0.35s ease,
+    opacity 0.3s ease,
+    visibility 0.35s ease;
 }
 
 .cama.animando .cobija,
@@ -1898,4 +1907,504 @@ body {
     height: auto;
     object-fit: contain;
     margin: 0 auto;
+}
+
+
+/* =================================
+   NUEVA PALETA DE COLORES
+   INSTRUCCIONES PARA DESCANSAR
+================================= */
+
+/* COLORES GENERALES */
+
+body {
+    background: var(--prussian-blue);
+    color: var(--alice-blue);
+}
+
+/* ESCENA 1: LA VOZ GUÍA */
+
+#inicio {
+    background:
+        radial-gradient(
+            ellipse at center,
+            var(--velvet-orchid) 0%,
+            var(--prussian-blue) 78%
+        );
+}
+
+.reloj {
+    border-color: var(--wisteria-blue);
+}
+
+.manecilla,
+.centro-reloj {
+    background: var(--alice-blue);
+}
+
+#inicio .hora {
+    color: var(--wisteria-blue);
+}
+
+.boton-continuar {
+    border-color: var(--wisteria-blue);
+    color: var(--alice-blue);
+}
+
+/* ESCENA 2: HABITACIÓN */
+
+#habitacion {
+    background:
+        radial-gradient(
+            ellipse at 50% 20%,
+            var(--velvet-orchid) 0%,
+            transparent 55%
+        ),
+        linear-gradient(
+            160deg,
+            #17113b,
+            var(--prussian-blue) 85%
+        );
+    color: var(--alice-blue);
+}
+
+#habitacion .hora {
+    color: var(--wisteria-blue);
+}
+
+.encabezado-habitacion p {
+    color: var(--alice-blue);
+    opacity: 0.8;
+}
+
+.habitacion {
+    border-color: var(--wisteria-blue);
+    background:
+        radial-gradient(
+            circle at 20% 20%,
+            #6e337755 0 2px,
+            transparent 3px
+        ),
+        radial-gradient(
+            circle at 80% 70%,
+            #a4a7e355 0 2px,
+            transparent 3px
+        ),
+        #17143d;
+}
+
+.ventana {
+    border-color: var(--wisteria-blue);
+    background: linear-gradient(
+        var(--prussian-blue),
+        var(--majorelle-blue)
+    );
+    color: var(--alice-blue);
+}
+
+.cama {
+    border-color: var(--wisteria-blue);
+    background: var(--alice-blue);
+    color: var(--prussian-blue);
+}
+
+.cobija {
+    background: var(--majorelle-blue);
+    color: white;
+}
+
+.cama.deslizada {
+    box-shadow: 0 0 18px #a4a7e388;
+}
+
+.decoracion {
+    color: var(--wisteria-blue);
+}
+
+.mensaje-ritual {
+    color: var(--alice-blue);
+}
+
+/* ENCABEZADOS Y TEXTOS DE LOS RITUALES */
+
+.etiqueta-ritual {
+    color: var(--wisteria-blue);
+}
+
+.encabezado-ritual h1 {
+    color: var(--alice-blue);
+}
+
+.encabezado-ritual p:last-child {
+    color: var(--alice-blue);
+    opacity: 0.8;
+}
+
+/* ESCENA 3: CONTAR OVEJAS */
+
+#ritual-ovejas {
+    background:
+        radial-gradient(
+            ellipse at 50% 20%,
+            var(--velvet-orchid),
+            transparent 65%
+        ),
+        linear-gradient(
+            180deg,
+            #17113b,
+            var(--prussian-blue)
+        );
+}
+
+.paisaje-ovejas {
+    background: linear-gradient(
+        180deg,
+        var(--prussian-blue) 0%,
+        #34316e 75%,
+        #45466b 100%
+    );
+}
+
+.luna-ovejas,
+.estrellas-ovejas {
+    color: var(--alice-blue);
+}
+
+.contador-ovejas,
+.instruccion-ovejas {
+    color: var(--alice-blue);
+}
+
+#numero-ovejas {
+    color: var(--wisteria-blue);
+}
+
+.contador-total {
+    color: var(--alice-blue);
+    opacity: 0.7;
+}
+
+.tabla,
+.poste {
+    background: var(--velvet-orchid);
+    border-color: #48234f;
+}
+
+.suelo {
+    background: #34316e;
+}
+
+.boton-ovejas,
+#continuar-ovejas {
+    border-color: var(--wisteria-blue);
+    background: var(--majorelle-blue);
+    color: white;
+}
+
+.boton-volver {
+    color: var(--wisteria-blue);
+}
+
+.final-ovejas {
+    color: var(--alice-blue);
+}
+
+/* ESCENA 4: RESPIRACIÓN */
+
+#ritual-respiracion {
+    background:
+        radial-gradient(
+            ellipse at center,
+            #34316e 0%,
+            #17113b 55%,
+            var(--prussian-blue) 100%
+        );
+}
+
+.aura-respiracion {
+    background: var(--wisteria-blue);
+}
+
+.esfera-respiracion {
+    background: radial-gradient(
+        circle at 35% 30%,
+        var(--alice-blue),
+        var(--wisteria-blue) 55%,
+        var(--majorelle-blue) 100%
+    );
+    box-shadow:
+        0 0 30px #a4a7e355,
+        0 0 75px #6a4dd444;
+}
+
+.esfera-respiracion span {
+    color: var(--prussian-blue);
+}
+
+.esfera-respiracion.inhalando {
+    box-shadow:
+        0 0 45px #e2ecf599,
+        0 0 100px #a4a7e366;
+}
+
+.esfera-respiracion.exhalando {
+    box-shadow:
+        0 0 20px #a4a7e444,
+        0 0 45px #6a4dd433;
+}
+
+.indicacion-gesto,
+.progreso-respiracion,
+.mensaje-respiracion {
+    color: var(--alice-blue);
+}
+
+#numero-respiraciones,
+.cuenta-regresiva {
+    color: var(--wisteria-blue);
+}
+
+.final-respiracion {
+    color: var(--alice-blue);
+}
+
+/* ESCENA 5: REPETICIÓN DE COLORES */
+
+#ritual-colores {
+    background: var(--prussian-blue);
+}
+
+.color-opcion.seleccionado {
+    border-color: var(--alice-blue);
+}
+
+.boton-ritual {
+    border-color: var(--wisteria-blue);
+    background: var(--majorelle-blue);
+    color: white;
+}
+
+#texto-colores,
+.final-ritual {
+    color: var(--alice-blue);
+}
+
+.selector-camara p,
+#mensaje-colores {
+    color: var(--alice-blue);
+}
+
+.boton-camara {
+    border-color: var(--wisteria-blue);
+    color: var(--alice-blue);
+}
+
+.boton-camara.seleccionado {
+    background: var(--wisteria-blue);
+    border-color: var(--wisteria-blue);
+    color: var(--prussian-blue);
+}
+
+/* ESCENA 6: RUIDO BLANCO */
+
+#ritual-ruido {
+    background:
+        radial-gradient(
+            ellipse at center,
+            #34316e,
+            var(--prussian-blue) 78%
+        );
+}
+
+.control-ruido {
+    color: var(--alice-blue);
+}
+
+.barra-centro {
+    background: var(--velvet-orchid);
+}
+
+#indicador-inclinacion {
+    background: var(--alice-blue);
+}
+
+#volumen-ruido {
+    accent-color: var(--majorelle-blue);
+}
+
+/* ESCENA 7: EL SUEÑO */
+
+#escena-sueno {
+    background:
+        radial-gradient(
+            ellipse at 50% 35%,
+            #34316e,
+            var(--prussian-blue) 80%
+        );
+}
+
+.luna-sueno {
+    color: var(--alice-blue);
+    text-shadow: 0 0 35px #a4a7e388;
+}
+
+.estrellas-sueno {
+    color: var(--alice-blue);
+}
+
+.nube-sueno {
+    color: var(--wisteria-blue);
+}
+
+.etiqueta-sueno,
+.etiqueta-final {
+    color: var(--wisteria-blue);
+}
+
+.texto-sueno h1,
+.texto-sueno p {
+    color: var(--alice-blue);
+}
+
+.respiracion-sueno,
+#mensaje-sueno {
+    color: var(--alice-blue);
+}
+
+#texto-sueno-secundario {
+    color: var(--wisteria-blue);
+}
+
+.boton-despertar {
+    border-color: var(--wisteria-blue);
+    color: var(--alice-blue);
+}
+
+/* ESCENA 8: LA ALARMA */
+
+#escena-alarma {
+    background:
+        radial-gradient(
+            ellipse at center,
+            var(--velvet-orchid),
+            var(--prussian-blue) 78%
+        );
+}
+
+.reloj-alarma p,
+.indicacion-alarma {
+    color: var(--wisteria-blue);
+}
+
+.hora-alarma {
+    color: var(--alice-blue);
+    text-shadow: 0 0 30px #a4a7e355;
+}
+
+.texto-alarma h1 {
+    color: var(--alice-blue);
+}
+
+.texto-alarma p {
+    color: var(--alice-blue);
+    opacity: 0.85;
+}
+
+.boton-alarma.principal {
+    background: var(--wisteria-blue);
+    color: var(--prussian-blue);
+}
+
+.boton-alarma.secundario {
+    border-color: var(--wisteria-blue);
+    color: var(--alice-blue);
+}
+
+/* FINALES DE LA EXPERIENCIA */
+
+#final-entrevista {
+    background: linear-gradient(
+        180deg,
+        var(--majorelle-blue),
+        var(--prussian-blue)
+    );
+    color: var(--alice-blue);
+}
+
+#final-descanso {
+    background:
+        radial-gradient(
+            ellipse at center,
+            var(--velvet-orchid),
+            var(--prussian-blue) 80%
+        );
+    color: var(--alice-blue);
+}
+
+.final-historia h1 {
+    color: var(--alice-blue);
+}
+
+.final-historia > p:not(.etiqueta-final) {
+    color: var(--alice-blue);
+}
+
+.sol-final,
+.luna-final {
+    color: var(--wisteria-blue);
+    text-shadow: 0 0 35px #a4a7e388;
+}
+
+.reiniciar-experiencia {
+    border-color: var(--wisteria-blue);
+    color: var(--alice-blue);
+}
+
+/* PENSAMIENTOS Y TRANSICIONES */
+
+.pensamiento-interior {
+    color: var(--wisteria-blue);
+}
+
+#pensamiento-colores,
+#ritual-colores #pensamiento-colores {
+    background: rgba(0, 2, 41, 0.92);
+    border-color: #a4a7e355;
+    color: var(--alice-blue);
+}
+
+.narracion-sueno {
+    color: var(--alice-blue);
+}
+
+.ultimo-pensamiento-sueno {
+    color: var(--wisteria-blue);
+}
+
+/* PANTALLAS FINALES */
+
+.pantalla-final-negra {
+    background: var(--prussian-blue);
+    color: var(--alice-blue);
+}
+
+.texto-final-progresivo {
+    color: var(--alice-blue);
+}
+
+.boton-final {
+    border-color: var(--wisteria-blue);
+    color: var(--alice-blue);
+}
+
+.boton-final:hover {
+    background: #a4a7e322;
+}
+
+/* BOTÓN PARA DORMIR */
+
+.boton-dormir {
+    border-color: var(--wisteria-blue);
+    background: var(--majorelle-blue);
+    color: white;
 }
