@@ -272,6 +272,8 @@ function restaurarCama(ritual) {
     }
 
     cama.dataset.animando = "false";
+    cama.classList.remove("animando");
+    cama.classList.remove("deslizada");
 }
 
 
@@ -461,11 +463,7 @@ document.getElementById("volver-habitacion").addEventListener("click", () => {
     document.getElementById("ritual-ovejas").classList.remove("activa");
     pantallaHabitacion.classList.add("activa");
 
-    // Restaurar la cama y permitir entrar nuevamente
     restaurarCama("ovejas");
-
-    document.querySelector('[data-ritual="ovejas"]')
-        .classList.remove("deslizada");
 });
 
 document.getElementById("continuar-ovejas").addEventListener("click", () => {
@@ -474,11 +472,7 @@ document.getElementById("continuar-ovejas").addEventListener("click", () => {
     document.getElementById("ritual-ovejas").classList.remove("activa");
     pantallaHabitacion.classList.add("activa");
 
-    // Restaurar la cama y permitir entrar nuevamente
     restaurarCama("ovejas");
-
-    document.querySelector('[data-ritual="ovejas"]')
-        .classList.remove("deslizada");
 });
 
 /* =================================
