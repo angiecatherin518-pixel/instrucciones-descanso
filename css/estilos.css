@@ -1637,3 +1637,29 @@ body {
 .selector-camara[hidden] {
     display: none;
 }
+
+/* =================================
+   VOZ INTERIOR DE LA PROTAGONISTA
+================================= */
+
+.pensamiento-interior {
+    width: 100%;
+    max-width: 380px;
+    min-height: 55px;
+    margin: 12px auto;
+    padding: 8px 12px;
+
+    color: #d7c6e8;
+    font-family: Georgia, serif;
+    font-size: clamp(15px, 4vw, 18px);
+    font-style: italic;
+    line-height: 1.6;
+    text-align: center;
+
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+
+.pensamiento-interior.visible {
+    opacity: 1;
+}

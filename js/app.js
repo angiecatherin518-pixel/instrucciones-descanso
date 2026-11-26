@@ -243,6 +243,26 @@ const numeroOvejas = document.getElementById("numero-ovejas");
 const botonSaltar = document.getElementById("saltar-oveja");
 const instruccionOvejas = document.getElementById("instruccion-ovejas");
 const finalOvejas = document.getElementById("final-ovejas");
+const pensamientoOvejas = document.getElementById("pensamiento-ovejas");
+
+const pensamientosOvejas = {
+    3: "¡3 ovejas y aún no tengo sueño!",
+    4: "Tengo que dar la talla mañana, mi reputación está en juego.",
+    5: "¡La entrevista, la entrevista, la entrevista!",
+    6: "Necesito ser productivo para encontrar mi lugar en el mundo.",
+    7: "Aunque… tal vez… trabajar no lo es todo.",
+    8: "Cuántas veces en la vida me he obligado a descansar para producir al día siguiente, jummm… casi todas las noches en realidad…",
+    10: "¡Ohhh síiii, por fin 10 ovejas!"
+};
+
+function mostrarPensamiento(elemento, texto) {
+    elemento.classList.remove("visible");
+    elemento.textContent = texto;
+
+    requestAnimationFrame(() => {
+        elemento.classList.add("visible");
+    });
+}
 
 // DETENER TODOS LOS TEMPORIZADORES
 
@@ -262,6 +282,9 @@ function reiniciarOvejas() {
     ovejasContadas = 0;
 
     numeroOvejas.textContent = "0";
+
+    pensamientoOvejas.textContent = "";
+    pensamientoOvejas.classList.remove("visible");
 
     instruccionOvejas.textContent =
         "Observa el salto. Cuenta la oveja cuando llegue al punto más alto.";
@@ -349,6 +372,13 @@ function hacerSaltarOveja() {
 
     numeroOvejas.textContent = ovejasContadas;
 
+    if (pensamientosOvejas[ovejasContadas]) {
+    mostrarPensamiento(
+        pensamientoOvejas,
+        pensamientosOvejas[ovejasContadas]
+    );
+    } 
+
     instruccionOvejas.textContent =
         `Muy bien. Has contado ${ovejasContadas} de ${TOTAL_OVEJAS} ovejas.`;
 
@@ -428,6 +458,14 @@ const mensajeRespiracion = document.getElementById("mensaje-respiracion");
 const cuentaRegresiva = document.getElementById("cuenta-regresiva");
 
 const finalRespiracion = document.getElementById("final-respiracion");
+const pensamientoRespiracion = document.getElementById("pensamiento-respiracion");
+
+const pensamientosRespiracion = {
+    1: "¿Exhalar? ¿Soltar?",
+    2: "Soltarlo todo. Soltar las expectativas. Soltar mi necesidad de reconocimiento.",
+    3: "Soltar el control de lo incontrolable…",
+    4: "¡Pero qué estoy diciendo! ¡Rápido, rápido, duérmeteeee!"
+};
 
 
 // PREPARAR EL MICRÓFONO AL ENTRAR
@@ -504,6 +542,9 @@ function reiniciarRespiracion() {
     soplidoDetectado = false;
 
     numeroRespiraciones.textContent = "0";
+
+    pensamientoRespiracion.textContent = "";
+    pensamientoRespiracion.classList.remove("visible");
 
     esferaRespiracion.style.transform = "scale(0.75)";
     textoRespiracion.textContent = "INHALA";
@@ -805,6 +846,13 @@ function completarRespiracion() {
 
     numeroRespiraciones.textContent =
         respiracionesCompletadas;
+
+        if (pensamientosRespiracion[respiracionesCompletadas]) {
+    mostrarPensamiento(
+        pensamientoRespiracion,
+        pensamientosRespiracion[respiracionesCompletadas]
+    );
+    }
 
     soplidoDetectado = false;
 
