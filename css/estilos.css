@@ -1855,3 +1855,9 @@ body {
     max-width: 580px;
     margin: 0 auto;
 }
+
+/* OCULTAR TODAS LAS ESCENAS QUE NO ESTÉN ACTIVAS */
+
+.pantalla:not(.activa) {
+    display: none !important;
+}
