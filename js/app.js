@@ -1074,11 +1074,10 @@ async function activarOrientacion() {
 
     if (!("DeviceOrientationEvent" in window)) {
         mensajeRuido.textContent =
-            "Tu dispositivo no permite detectar la inclinación. Usa la barra para ajustar el sonido.";
+            "Tu dispositivo no permite detectar la inclinación. Usa la barra.";
         return;
     }
 
-    // Solicitar permiso si Chrome lo requiere.
     if (
         typeof DeviceOrientationEvent.requestPermission === "function"
     ) {
@@ -1087,20 +1086,15 @@ async function activarOrientacion() {
                 await DeviceOrientationEvent.requestPermission();
 
             if (permiso !== "granted") {
-                orientacionActiva = false;
-
                 mensajeRuido.textContent =
-                    "No se concedió el permiso. Puedes usar la barra de intensidad.";
-
+                    "No se concedió el permiso. Usa la barra de intensidad.";
                 return;
             }
 
         } catch (error) {
-            console.error("Error al solicitar permiso:", error);
-
+            console.error(error);
             mensajeRuido.textContent =
-                "No pudimos acceder al sensor. Usa la barra de intensidad.";
-
+                "No pudimos acceder al sensor. Usa la barra.";
             return;
         }
     }
@@ -1110,8 +1104,18 @@ async function activarOrientacion() {
         cambiarIntensidadPorInclinacion
     );
 
+    window.removeEventListener(
+        "deviceorientationabsolute",
+        cambiarIntensidadPorInclinacion
+    );
+
     window.addEventListener(
         "deviceorientation",
+        cambiarIntensidadPorInclinacion
+    );
+
+    window.addEventListener(
+        "deviceorientationabsolute",
         cambiarIntensidadPorInclinacion
     );
 
@@ -1147,18 +1151,11 @@ function cambiarVolumen(porcentaje) {
 }
 
 
-
 function cambiarIntensidadPorInclinacion(evento) {
-
-    // Mostrar en pantalla el valor que recibe el sensor.
-    mensajeRuido.textContent =
-        `Inclinación detectada: ${evento.gamma}`;
 
     if (!gananciaRuido) return;
 
     if (evento.gamma === null || evento.gamma === undefined) {
-        mensajeRuido.textContent =
-            "El sensor no está enviando datos. Usa la barra de intensidad.";
         return;
     }
 
@@ -1173,6 +1170,9 @@ function cambiarIntensidadPorInclinacion(evento) {
 
     indicadorInclinacion.style.left =
         `${porcentaje}%`;
+
+    mensajeRuido.textContent =
+        "Encuentra la intensidad que te resulte más agradable.";
 }
 
 
