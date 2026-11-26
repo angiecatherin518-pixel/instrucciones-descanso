@@ -1034,6 +1034,11 @@ async function encenderRadio() {
         mensajeRuido.textContent =
             "Sintonizando la radio...";
 
+        // Solicitar el permiso del sensor inmediatamente
+        // después de tocar el botón.
+        const permisoOrientacion = activarOrientacion();
+
+        // Crear y activar el sonido.
         crearRuidoBlanco();
 
         await contextoRuido.resume();
@@ -1044,15 +1049,19 @@ async function encenderRadio() {
         botonActivarRuido.hidden = true;
         controlRuido.hidden = false;
 
-        mensajeRuido.textContent =
-            "Inclina tu celular y encuentra una intensidad agradable.";
+        // Esperar el resultado del permiso.
+        await permisoOrientacion;
 
-        // Activar el sensor de inclinación
-        await activarOrientacion();
+        if (orientacionActiva) {
+            mensajeRuido.textContent =
+                "Inclina tu celular hacia los lados para encontrar tu sonido.";
+        }
 
     } catch (error) {
+        console.error("Error al encender la radio:", error);
+
         mensajeRuido.textContent =
-            "No pudimos iniciar el sonido. Comprueba que tu navegador permita reproducir audio.";
+            "No pudimos iniciar la radio. Comprueba los permisos de audio.";
 
         botonActivarRuido.disabled = false;
     }
@@ -1061,16 +1070,15 @@ async function encenderRadio() {
 
 // ACTIVAR SENSOR DE INCLINACIÓN
 
-
 async function activarOrientacion() {
 
     if (!("DeviceOrientationEvent" in window)) {
         mensajeRuido.textContent =
-            "Tu dispositivo no permite detectar la inclinación. Puedes usar la barra para ajustar el sonido.";
+            "Tu dispositivo no permite detectar la inclinación. Usa la barra para ajustar el sonido.";
         return;
     }
 
-    // Solicitar permiso en dispositivos que lo requieren.
+    // Solicitar permiso si Chrome lo requiere.
     if (
         typeof DeviceOrientationEvent.requestPermission === "function"
     ) {
@@ -1079,20 +1087,24 @@ async function activarOrientacion() {
                 await DeviceOrientationEvent.requestPermission();
 
             if (permiso !== "granted") {
+                orientacionActiva = false;
+
                 mensajeRuido.textContent =
                     "No se concedió el permiso. Puedes usar la barra de intensidad.";
+
                 return;
             }
 
         } catch (error) {
             console.error("Error al solicitar permiso:", error);
+
             mensajeRuido.textContent =
                 "No pudimos acceder al sensor. Usa la barra de intensidad.";
+
             return;
         }
     }
 
-    // Evitar registrar el mismo evento varias veces.
     window.removeEventListener(
         "deviceorientation",
         cambiarIntensidadPorInclinacion
@@ -1108,8 +1120,6 @@ async function activarOrientacion() {
     mensajeRuido.textContent =
         "Inclina tu celular hacia los lados para encontrar tu sonido.";
 }
-
-
 
 // CAMBIAR EL VOLUMEN
 
@@ -1243,16 +1253,3 @@ document.getElementById("volver-ruido")
 document.getElementById("continuar-ruido")
     .addEventListener("click", salirDeRuido);
 
-// PRUEBA: COMPROBAR SI CHROME RECIBE LA INCLINACIÓN
-
-window.addEventListener("deviceorientation", function(evento) {
-
-    mensajeRuido.textContent =
-        `Sensor activo | Gamma: ${evento.gamma} | Beta: ${evento.beta}`;
-
-    console.log("Gamma:", evento.gamma);
-    console.log("Beta:", evento.beta);
-
-});
-
-mensajeRuido.textContent = "PRUEBA: JAVASCRIPT ACTUALIZADO";
