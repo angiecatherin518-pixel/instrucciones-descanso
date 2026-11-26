@@ -1861,3 +1861,14 @@ body {
 .pantalla:not(.activa) {
     display: none !important;
 }
+
+/* ILUSTRACIÓN ANIMADA DE LAS CAMAS */
+
+.ilustracion-cama {
+    display: block;
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto;
+}

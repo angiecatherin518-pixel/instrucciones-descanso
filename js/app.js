@@ -199,30 +199,75 @@ function iniciarRitual(cama) {
 }
 
 
+// DURACIÓN DE LA ANIMACIÓN DE LA COBIJA
+const duracionGifCama = 2000;
+
+// ACTIVAR LA ANIMACIÓN
+function activarAnimacionCama(cama) {
+
+    // Evitar que la animación se active varias veces
+    if (cama.dataset.animando === "true") return;
+
+    const ilustracion = cama.querySelector(".ilustracion-cama");
+
+    // Si la cama todavía no tiene un GIF, abrir el ritual normalmente
+    if (!ilustracion || !ilustracion.dataset.gif) {
+        iniciarRitual(cama);
+        return;
+    }
+
+    cama.dataset.animando = "true";
+
+    // Activar el GIF
+    ilustracion.src = ilustracion.dataset.gif;
+
+    // Esperar a que termine la animación y abrir el ritual
+    setTimeout(() => {
+        cama.dataset.animando = "false";
+        iniciarRitual(cama);
+    }, duracionGifCama);
+}
+
+
+// DETECTAR EL DESLIZAMIENTO
 camas.forEach((cama) => {
+
     cama.addEventListener("pointerdown", (evento) => {
         inicioDeslizamiento = evento.clientY;
         cama.setPointerCapture(evento.pointerId);
     });
 
     cama.addEventListener("pointerup", (evento) => {
+
         const finalDeslizamiento = evento.clientY;
         const distancia = finalDeslizamiento - inicioDeslizamiento;
 
-        // Si la persona desliza hacia abajo al menos 35 píxeles
         if (distancia > 35) {
-            iniciarRitual(cama);
+            activarAnimacionCama(cama);
         }
     });
 
     // También permite seleccionar con teclado
     cama.addEventListener("click", (evento) => {
         if (evento.detail === 0) {
-            iniciarRitual(cama);
+            activarAnimacionCama(cama);
         }
     });
+
 });
 
+function restaurarCama(ritual) {
+    const cama = document.querySelector(`[data-ritual="${ritual}"]`);
+    if (!cama) return;
+
+    const ilustracion = cama.querySelector(".ilustracion-cama");
+
+    if (ilustracion) {
+        ilustracion.src = ilustracion.dataset.imagenDeshecha;
+    }
+
+    cama.dataset.animando = "false";
+}
 
 
 /* =================================
