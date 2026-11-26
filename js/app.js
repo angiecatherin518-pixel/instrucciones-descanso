@@ -23,6 +23,7 @@ const audioCobija = document.getElementById("audio-cobija");
 const audioBostezo = document.getElementById("audio-bostezo");
 const audioRonquido = document.getElementById("audio-ronquido");
 const audioCancionCuna = document.getElementById("audio-cancion-cuna");
+const audioAlarma = document.getElementById("audio-alarma");
 
 // AUDIOS DE LA ESCENA INICIAL
 
@@ -2017,6 +2018,26 @@ function comenzarSueno() {
 
 function mostrarAlarma() {
 
+    // Detener los sonidos del sueño.
+if (audioRonquido) {
+    audioRonquido.pause();
+    audioRonquido.currentTime = 0;
+}
+
+if (audioCancionCuna) {
+    audioCancionCuna.pause();
+    audioCancionCuna.currentTime = 0;
+}
+
+// Reproducir la alarma.
+if (audioAlarma) {
+    audioAlarma.currentTime = 0;
+    audioAlarma.volume = 0.65;
+    audioAlarma.play().catch(error => {
+        console.log("No se pudo reproducir la alarma:", error);
+    });
+}
+
     if (audioRonquido) {
     audioRonquido.pause();
     audioRonquido.currentTime = 0;
@@ -2078,10 +2099,21 @@ if (botonDormir) {
 
 // BOTONES DE LA ALARMA
 if (botonApagarAlarma) {
+
+    if (audioAlarma) {
+    audioAlarma.pause();
+    audioAlarma.currentTime = 0;
+}
     botonApagarAlarma.addEventListener("click", levantarse);
 }
 
 if (botonPosponerAlarma) {
+
+if (audioAlarma) {
+    audioAlarma.pause();
+    audioAlarma.currentTime = 0;
+}
+
     botonPosponerAlarma.addEventListener("click", seguirDescansando);
 }
 
