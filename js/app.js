@@ -1703,6 +1703,17 @@ document.getElementById("continuar-ruido")
 const escenaSueno = document.getElementById("escena-sueno");
 const escenaAlarma = document.getElementById("escena-alarma");
 
+// ELEMENTOS DE LA NARRACIÓN DEL SUEÑO
+
+const narracionSueno = document.getElementById("narracion-sueno");
+const ultimoPensamientoSueno = document.getElementById("ultimo-pensamiento-sueno");
+const mensajeSueno = document.getElementById("mensaje-sueno");
+const textoSuenoSecundario = document.getElementById("texto-sueno-secundario");
+const zzzSueno = document.getElementById("zzz-sueno");
+
+let temporizadorNarracion = [];
+let temporizadorEscritura = null;
+
 const finalEntrevista = document.getElementById("final-entrevista");
 const finalDescanso = document.getElementById("final-descanso");
 
@@ -1711,6 +1722,25 @@ const botonApagarAlarma = document.getElementById("apagar-alarma");
 const botonPosponerAlarma = document.getElementById("posponer-alarma");
 
 let temporizadorAlarma = null;
+
+// ESCRIBIR LA NARRACIÓN LETRA POR LETRA
+
+function escribirNarracion(elemento, texto, velocidad = 65) {
+    clearInterval(temporizadorEscritura);
+
+    elemento.textContent = "";
+    let posicion = 0;
+
+    temporizadorEscritura = setInterval(() => {
+        elemento.textContent += texto.charAt(posicion);
+        posicion++;
+
+        if (posicion >= texto.length) {
+            clearInterval(temporizadorEscritura);
+            temporizadorEscritura = null;
+        }
+    }, velocidad);
+}
 
 
 // CAMBIAR DE ESCENA
@@ -1723,14 +1753,62 @@ function cambiarPantalla(actual, siguiente) {
 
 // COMENZAR A DORMIR
 
+// COMENZAR LA TRANSICIÓN HACIA EL SUEÑO
+
 function comenzarSueno() {
 
+    // Limpiar temporizadores anteriores.
+    temporizadorNarracion.forEach(clearTimeout);
+    temporizadorNarracion = [];
+
+    clearInterval(temporizadorEscritura);
+
+    // Preparar los textos.
+    narracionSueno.textContent = "";
+    ultimoPensamientoSueno.hidden = true;
+    mensajeSueno.hidden = true;
+    textoSuenoSecundario.hidden = true;
+    zzzSueno.hidden = true;
+
+    // Mostrar la escena del cielo y comenzar la narración.
     cambiarPantalla(pantallaHabitacion, escenaSueno);
 
-    // La alarma aparece después de unos segundos.
+    const textoPrincipal =
+        "Ser, no ser, trabajar para ser, descansar para producir y repetir el ciclo…";
+
+    escribirNarracion(narracionSueno, textoPrincipal, 75);
+
+    // Después de terminar la primera reflexión.
+    temporizadorNarracion.push(setTimeout(() => {
+
+        ultimoPensamientoSueno.hidden = false;
+        ultimoPensamientoSueno.classList.add("aparecer-sueno");
+
+    }, 6500));
+
+    // Aparece el mensaje de descanso.
+    temporizadorNarracion.push(setTimeout(() => {
+
+        mensajeSueno.hidden = false;
+        textoSuenoSecundario.hidden = false;
+
+        mensajeSueno.classList.add("aparecer-sueno");
+        textoSuenoSecundario.classList.add("aparecer-sueno");
+
+    }, 8500));
+
+    // Finalmente aparecen los ronquidos.
+    temporizadorNarracion.push(setTimeout(() => {
+
+        zzzSueno.hidden = false;
+        zzzSueno.classList.add("aparecer-sueno");
+
+    }, 10500));
+
+    // La alarma llega después de un momento de sueño.
     temporizadorAlarma = setTimeout(() => {
         mostrarAlarma();
-    }, 10000);
+    }, 20500);
 }
 
 
