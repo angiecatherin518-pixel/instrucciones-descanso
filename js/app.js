@@ -20,6 +20,53 @@ const botonContinuar = document.getElementById("continuar");
 const pantallaInicio = document.getElementById("inicio");
 const pantallaHabitacion = document.getElementById("habitacion");
 
+// AUDIOS DE LA ESCENA INICIAL
+
+const audioRespiracion = document.getElementById("audio-respiracion");
+const audioReloj = document.getElementById("audio-reloj");
+
+let audiosInicioIniciados = false;
+
+function iniciarAudiosInicio() {
+    if (audiosInicioIniciados) return;
+
+    const audios = [audioRespiracion, audioReloj];
+
+    const reproducciones = audios.map((audio) => {
+        if (!audio) return Promise.resolve(false);
+
+        audio.volume = 0.5;
+
+        return audio.play()
+            .then(() => true)
+            .catch(() => false);
+    });
+
+    Promise.all(reproducciones).then((resultados) => {
+        if (resultados.every(Boolean)) {
+            audiosInicioIniciados = true;
+        }
+    });
+}
+
+function detenerAudiosInicio() {
+    [audioRespiracion, audioReloj].forEach((audio) => {
+        if (audio) {
+            audio.pause();
+            audio.currentTime = 0;
+        }
+    });
+
+    audiosInicioIniciados = false;
+}
+
+// Intentar reproducir automáticamente al abrir la página.
+iniciarAudiosInicio();
+
+// Si el navegador bloquea la reproducción automática,
+// iniciar los dos audios con el primer toque.
+botonContinuar.addEventListener("click", iniciarAudiosInicio);
+
 
 /* =================================
    RELOJ DINÁMICO DE LA EXPERIENCIA
@@ -104,9 +151,11 @@ function escribirSiguienteMensaje() {
         escribirLetra();
 
     } else {
-        pantallaInicio.classList.remove("activa");
-        pantallaHabitacion.classList.add("activa");
-    }
+    detenerAudiosInicio();
+
+    pantallaInicio.classList.remove("activa");
+    pantallaHabitacion.classList.add("activa");
+}
 }
 
 botonContinuar.addEventListener("click", escribirSiguienteMensaje);
