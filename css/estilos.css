@@ -1882,3 +1882,20 @@ body {
     object-fit: contain;
     margin: 0 auto;
 }
+
+.radio-ruido {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: 25px auto;
+}
+
+.ilustracion-radio {
+    display: block;
+    width: 100%;
+    max-width: 350px;
+    height: auto;
+    object-fit: contain;
+    margin: 0 auto;
+}
