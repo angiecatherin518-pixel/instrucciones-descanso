@@ -89,6 +89,10 @@
     <p id="mensaje-ritual" class="mensaje-ritual">
         Puedes elegir cualquiera de las cuatro camas.
     </p>
+
+    <button id="boton-dormir" class="boton-dormir" hidden>
+    Ya puedo descansar
+    </button>
 </section>
 
 
@@ -346,11 +350,134 @@
     </button>
 
 </section>
+<!-- ESCENA 5: EL SUEÑO -->
+
+<section id="escena-sueno" class="pantalla">
+
+    <div class="cielo-sueno">
+        <div class="luna-sueno">☾</div>
+
+        <div class="estrellas-sueno">
+            ✦　　　 ·　　　 ✧
+        </div>
+
+        <div class="nube-sueno nube-sueno-uno">☁</div>
+        <div class="nube-sueno nube-sueno-dos">☁</div>
+        <div class="nube-sueno nube-sueno-tres">☁</div>
+    </div>
+
+    <div class="texto-sueno">
+        <p class="etiqueta-sueno">02:58 AM</p>
+        <h1 id="mensaje-sueno">Por fin, puedes descansar.</h1>
+        <p>La habitación se queda en silencio.</p>
+        <p class="respiracion-sueno">Z z z...</p>
+    </div>
+
+    <button id="despertar-manualmente" class="boton-despertar">
+        Continuar
+    </button>
+
+</section>
+
+
+<!-- ESCENA 6: LA ALARMA -->
+
+<section id="escena-alarma" class="pantalla">
+
+    <div class="reloj-alarma">
+        <p>ES HORA DE DESPERTAR</p>
+        <div class="hora-alarma">07:00</div>
+        <p class="am-alarma">AM</p>
+    </div>
+
+    <div class="texto-alarma">
+        <h1>Ya es mañana.</h1>
+        <p>Tienes una entrevista importante.</p>
+        <p>Es hora de levantarte.</p>
+    </div>
+
+    <div class="opciones-alarma">
+        <button id="apagar-alarma" class="boton-alarma principal">
+            Apagar alarma
+        </button>
+
+        <button id="posponer-alarma" class="boton-alarma secundario">
+            Posponer 5 minutos
+        </button>
+    </div>
+
+    <p class="indicacion-alarma">
+        También puedes deslizar hacia abajo para apagarla.
+    </p>
+
+</section>
+
+
+<!-- FINAL 1: LEVANTARSE -->
+
+<section id="final-entrevista" class="pantalla final-historia">
+
+    <div class="sol-final">☀</div>
+
+    <p class="etiqueta-final">07:05 AM</p>
+
+    <h1>Un nuevo día comienza.</h1>
+
+    <p>
+        Te levantas, te preparas y sales hacia la entrevista.
+    </p>
+
+    <p>
+        Al menos ahora has descansado lo suficiente para cumplir
+        con lo que se espera de ti.
+    </p>
+
+    <p class="frase-final">
+        Descansar para poder seguir.
+    </p>
+
+    <button class="reiniciar-experiencia">
+        Volver a empezar
+    </button>
+
+</section>
+
+
+<!-- FINAL 2: ELEGIR DESCANSAR -->
+
+<section id="final-descanso" class="pantalla final-historia">
+
+    <div class="luna-final">☾</div>
+
+    <p class="etiqueta-final">07:00 AM</p>
+
+    <h1>Hoy puedes quedarte un poco más.</h1>
+
+    <p>
+        La entrevista puede esperar unos minutos.
+        No tienes que convertir cada momento de tu vida
+        en una tarea pendiente.
+    </p>
+
+    <p>
+        Cierras los ojos otra vez. Esta vez no para
+        estar preparada para mañana, sino porque quieres.
+    </p>
+
+    <p class="frase-final">
+        Descansar también es suficiente.
+    </p>
+
+    <button class="reiniciar-experiencia">
+        Volver a empezar
+    </button>
+
+</section>
 
 
     </main>
 
-    <script src="js/app.js?v=13"></script>
+    <script src="js/app.js?v=14"></script>
 
 </body>
 </html>

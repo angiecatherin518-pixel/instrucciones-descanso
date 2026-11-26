@@ -19,6 +19,27 @@ const botonContinuar = document.getElementById("continuar");
 const pantallaInicio = document.getElementById("inicio");
 const pantallaHabitacion = document.getElementById("habitacion");
 
+// CONTROL DE LOS CUATRO RITUALES
+
+const ritualesCompletados = new Set();
+
+const botonDormir = document.getElementById("boton-dormir");
+
+function registrarRitualCompletado(nombre) {
+
+    ritualesCompletados.add(nombre);
+
+    mensajeRitual.textContent =
+        `Has completado ${ritualesCompletados.size} de 4 rituales.`;
+
+    if (ritualesCompletados.size === 4) {
+        botonDormir.hidden = false;
+
+        mensajeRitual.textContent =
+            "Has completado los cuatro rituales. Ya puedes descansar.";
+    }
+}
+
 // AVANZAR EN LA NARRACIÓN
 
 botonContinuar.addEventListener("click", () => {
@@ -172,6 +193,8 @@ function hacerSaltarOveja() {
     oveja.classList.add("saltando");
 
     if (ovejasContadas === 50) {
+
+        registrarRitualCompletado("ovejas");
         instruccionOvejas.textContent =
             "Has ayudado a saltar a las 50 ovejas.";
 
@@ -587,6 +610,8 @@ function completarRespiracion() {
     soplidoDetectado = false;
 
     if (respiracionesCompletadas >= 4) {
+
+        registrarRitualCompletado("respiracion");
         faseRespiracion = "terminada";
 
         textoRespiracion.textContent = "DESCANSA";
@@ -874,6 +899,8 @@ function actualizarCirculoColor() {
 
 function completarColores() {
     if (!camaraActiva) return;
+
+    registrarRitualCompletado("colores");
 
     detenerCamaraColores();
 
@@ -1182,6 +1209,8 @@ function cambiarIntensidadPorInclinacion(evento) {
 function terminarRitualRuido() {
     if (!contextoRuido) return;
 
+    registrarRitualCompletado("ruido");
+
     window.removeEventListener(
         "deviceorientation",
         cambiarIntensidadPorInclinacion
@@ -1253,3 +1282,117 @@ document.getElementById("volver-ruido")
 document.getElementById("continuar-ruido")
     .addEventListener("click", salirDeRuido);
 
+/* =================================
+   INTERACCIÓN: EL SUEÑO Y LA ALARMA
+================================= */
+
+const escenaSueno = document.getElementById("escena-sueno");
+const escenaAlarma = document.getElementById("escena-alarma");
+
+const finalEntrevista = document.getElementById("final-entrevista");
+const finalDescanso = document.getElementById("final-descanso");
+
+const botonDespertar = document.getElementById("despertar-manualmente");
+const botonApagarAlarma = document.getElementById("apagar-alarma");
+const botonPosponerAlarma = document.getElementById("posponer-alarma");
+
+let temporizadorAlarma = null;
+
+
+// CAMBIAR DE ESCENA
+
+function cambiarPantalla(actual, siguiente) {
+    actual.classList.remove("activa");
+    siguiente.classList.add("activa");
+}
+
+
+// COMENZAR A DORMIR
+
+function comenzarSueno() {
+
+    cambiarPantalla(pantallaHabitacion, escenaSueno);
+
+    // La alarma aparece después de unos segundos.
+    temporizadorAlarma = setTimeout(() => {
+        mostrarAlarma();
+    }, 10000);
+}
+
+
+// MOSTRAR LA ALARMA
+
+function mostrarAlarma() {
+
+    clearTimeout(temporizadorAlarma);
+
+    cambiarPantalla(escenaSueno, escenaAlarma);
+}
+
+
+// APAGAR ALARMA: IR A LA ENTREVISTA
+
+function levantarse() {
+
+    clearTimeout(temporizadorAlarma);
+
+    cambiarPantalla(escenaAlarma, finalEntrevista);
+}
+
+
+// POSPONER ALARMA: SEGUIR DESCANSANDO
+
+function seguirDescansando() {
+
+    clearTimeout(temporizadorAlarma);
+
+    cambiarPantalla(escenaAlarma, finalDescanso);
+}
+
+
+// BOTÓN PARA DORMIR
+
+botonDormir.addEventListener("click", comenzarSueno);
+
+
+// BOTÓN PARA PASAR A LA ALARMA ANTES
+
+botonDespertar.addEventListener("click", mostrarAlarma);
+
+
+// BOTONES DE LA ALARMA
+
+botonApagarAlarma.addEventListener("click", levantarse);
+
+botonPosponerAlarma.addEventListener("click", seguirDescansando);
+
+
+// TAMBIÉN SE PUEDE APAGAR DESLIZANDO HACIA ABAJO
+
+let inicioDeslizamientoAlarma = 0;
+
+escenaAlarma.addEventListener("pointerdown", (evento) => {
+    inicioDeslizamientoAlarma = evento.clientY;
+});
+
+escenaAlarma.addEventListener("pointerup", (evento) => {
+
+    const distancia =
+        evento.clientY - inicioDeslizamientoAlarma;
+
+    if (distancia > 70) {
+        levantarse();
+    }
+});
+
+
+// VOLVER A COMENZAR LA EXPERIENCIA
+
+document.querySelectorAll(".reiniciar-experiencia")
+    .forEach((boton) => {
+
+        boton.addEventListener("click", () => {
+            window.location.reload();
+        });
+
+    });
