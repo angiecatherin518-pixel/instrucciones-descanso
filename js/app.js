@@ -20,6 +20,61 @@ const botonContinuar = document.getElementById("continuar");
 const pantallaInicio = document.getElementById("inicio");
 const pantallaHabitacion = document.getElementById("habitacion");
 
+
+/* =================================
+   RELOJ DINÁMICO DE LA EXPERIENCIA
+================================= */
+
+const elementosHora = document.querySelectorAll(
+    ".hora, .etiqueta-sueno"
+);
+
+const minutosIniciales = 2 * 60 + 47; // 02:47 AM
+const minutosAlarma = 7 * 60;          // 07:00 AM
+
+const inicioDelReloj = performance.now();
+
+function actualizarReloj(forzarAlarma = false) {
+    const segundosTranscurridos =
+        (performance.now() - inicioDelReloj) / 1000;
+
+    // El tiempo comienza lentamente y acelera progresivamente.
+    const minutosAvanzados = Math.floor(
+        segundosTranscurridos * 0.1 +
+        (segundosTranscurridos * segundosTranscurridos) / 900
+    );
+
+    // El reloj no supera las 06:59 antes de la alarma.
+    const horaActual = forzarAlarma
+        ? minutosAlarma
+        : Math.min(
+            minutosIniciales + minutosAvanzados,
+            minutosAlarma - 1
+        );
+
+    const hora24 = Math.floor(horaActual / 60) % 24;
+    const minutos = horaActual % 60;
+
+    const hora12 = hora24 % 12 || 12;
+    const periodo = hora24 >= 12 ? "PM" : "AM";
+
+    const horaFormateada =
+        `${String(hora12).padStart(2, "0")}:` +
+        `${String(minutos).padStart(2, "0")} ${periodo}`;
+
+    elementosHora.forEach((elemento) => {
+        elemento.textContent = horaFormateada;
+    });
+}
+
+// Actualizar cada segundo.
+actualizarReloj();
+
+const intervaloReloj = setInterval(() => {
+    actualizarReloj();
+}, 1000);
+
+
 // ESCRIBIR EL SIGUIENTE FRAGMENTO SIN BORRAR EL ANTERIOR
 
 function escribirSiguienteMensaje() {
@@ -1453,6 +1508,10 @@ function mostrarAlarma() {
     detenerSonidoRuido();
 
     clearTimeout(temporizadorAlarma);
+
+    // Detener el reloj y marcar las 7:00 AM.
+    clearInterval(intervaloReloj);
+    actualizarReloj(true);
 
     cambiarPantalla(escenaSueno, escenaAlarma);
 }
