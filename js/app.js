@@ -460,17 +460,26 @@ document.getElementById("volver-habitacion").addEventListener("click", () => {
 
     document.getElementById("ritual-ovejas").classList.remove("activa");
     pantallaHabitacion.classList.add("activa");
-});
 
-// CONTINUAR DESPUÉS DE CONTAR LAS OVEJAS
+    // Restaurar la cama y permitir entrar nuevamente
+    restaurarCama("ovejas");
+
+    document.querySelector('[data-ritual="ovejas"]')
+        .classList.remove("deslizada");
+});
 
 document.getElementById("continuar-ovejas").addEventListener("click", () => {
     detenerSecuenciaOvejas();
 
     document.getElementById("ritual-ovejas").classList.remove("activa");
     pantallaHabitacion.classList.add("activa");
-});
 
+    // Restaurar la cama y permitir entrar nuevamente
+    restaurarCama("ovejas");
+
+    document.querySelector('[data-ritual="ovejas"]')
+        .classList.remove("deslizada");
+});
 
 /* =================================
    INTERACCIÓN: RESPIRACIÓN
