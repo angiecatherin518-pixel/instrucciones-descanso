@@ -238,16 +238,47 @@
     </div>
 
     <div class="zona-colores" id="zona-colores">
-        <div class="circulo-color" id="circulo-color"></div>
-        <p id="texto-colores">Escoge el color que quieras.</p>
+
+    <div class="circulo-color" id="circulo-color">
+        <span id="nombre-color">ROSA</span>
+    </div>
+
+    <p id="texto-colores">
+        Escoge el color que quieras.
+    </p>
+
     </div>
 
     <video id="camara-colores" autoplay playsinline muted></video>
     <canvas id="canvas-colores" hidden></canvas>
 
-    <button id="activar-camara-colores" class="boton-ritual">
-        Activar cámara
-    </button>
+    <!-- SELECCIÓN DE CÁMARA -->
+
+<div class="selector-camara" id="selector-camara-colores">
+
+    <p>¿Qué cámara quieres utilizar?</p>
+
+    <div class="opciones-camara">
+
+        <button
+            class="boton-camara seleccionado"
+            data-camara="environment">
+            Cámara trasera
+        </button>
+
+        <button
+            class="boton-camara"
+            data-camara="user">
+            Cámara frontal
+        </button>
+
+    </div>
+
+</div>
+
+<button id="activar-camara-colores" class="boton-ritual">
+    Activar cámara
+</button>
 
     <p id="mensaje-colores" class="mensaje-ritual">
         Cuando estés lista, cubre la cámara con tu dedo.
@@ -477,7 +508,7 @@
 
     </main>
 
-    <script src="js/app.js?v=14"></script>
+    <script src="js/app.js?v=15"></script>
 
 </body>
 </html>

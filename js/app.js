@@ -283,8 +283,12 @@ async function prepararMicrofono() {
             "Preparando el micrófono...";
 
         flujoMicrofono = await navigator.mediaDevices.getUserMedia({
-            audio: true
-        });
+    audio: {
+        echoCancellation: false,
+        noiseSuppression: false,
+        autoGainControl: false
+    }
+});
 
         const AudioContextClass =
             window.AudioContext || window.webkitAudioContext;
@@ -419,16 +423,24 @@ function comenzarRetencion() {
 
 // ESCUCHAR EL SOPLIDO
 
+// ESCUCHAR Y DETECTAR EL SOPLIDO
+
 function iniciarDeteccionSoplido() {
+
     if (!analizadorMicrofono || !microfonoListo) return;
 
     const datos = new Float32Array(
         analizadorMicrofono.fftSize
     );
 
+    let nivelAmbiente = 0;
+    let muestrasAmbiente = 0;
+    let inicioCalibracion = Date.now();
+
     momentoSoplido = null;
 
     function escuchar() {
+
         if (faseRespiracion !== "exhalando") return;
 
         analizadorMicrofono.getFloatTimeDomainData(datos);
@@ -441,32 +453,54 @@ function iniciarDeteccionSoplido() {
 
         const volumen = Math.sqrt(suma / datos.length);
 
-        // Detectar un soplido sostenido
-        if (volumen > 0.07) {
+        // Primero escuchar el sonido normal del ambiente.
+        if (Date.now() - inicioCalibracion < 400) {
 
-            if (momentoSoplido === null) {
-                momentoSoplido = Date.now();
-            }
+            nivelAmbiente += volumen;
+            muestrasAmbiente++;
 
-            if (Date.now() - momentoSoplido >= 450) {
-
-                soplidoDetectado = true;
-
-                textoRespiracion.textContent = "LISTO";
-
-                indicacionGesto.textContent =
-                    "Ahora puedes soltar tu dedo";
-
-                mensajeRespiracion.textContent =
-                    "Muy bien. Suelta para continuar.";
-
-                cancelAnimationFrame(animacionMicrofono);
-
-                return;
-            }
+            mensajeRespiracion.textContent =
+                "Preparando la escucha...";
 
         } else {
-            momentoSoplido = null;
+
+            // Calcular el nivel necesario para detectar el soplido.
+            const promedioAmbiente =
+                nivelAmbiente / Math.max(1, muestrasAmbiente);
+
+            const umbral = Math.max(
+                0.012,
+                promedioAmbiente * 2.2
+            );
+
+            // Detectar cuando el aire supera el sonido ambiente.
+            if (volumen > umbral) {
+
+                if (momentoSoplido === null) {
+                    momentoSoplido = Date.now();
+                }
+
+                // Un soplido sostenido durante 180 ms es suficiente.
+                if (Date.now() - momentoSoplido >= 180) {
+
+                    soplidoDetectado = true;
+
+                    textoRespiracion.textContent = "LISTO";
+
+                    indicacionGesto.textContent =
+                        "Ahora puedes soltar tu dedo.";
+
+                    mensajeRespiracion.textContent =
+                        "Muy bien. Has completado la exhalación.";
+
+                    cancelAnimationFrame(animacionMicrofono);
+
+                    return;
+                }
+
+            } else {
+                momentoSoplido = null;
+            }
         }
 
         animacionMicrofono =
@@ -475,7 +509,6 @@ function iniciarDeteccionSoplido() {
 
     escuchar();
 }
-
 
 // MOVIMIENTO DEL DEDO
 
@@ -701,6 +734,23 @@ let animacionColores = null;
 let progresoColor = 0;
 let camaraActiva = false;
 let camaraCubierta = false;
+let camaraElegida = "environment";
+
+const nombreColor = document.getElementById("nombre-color");
+
+const selectorCamaraColores =
+    document.getElementById("selector-camara-colores");
+
+const botonesCamara =
+    document.querySelectorAll(".boton-camara");
+
+const nombresColores = {
+    "#E8A1A8": "ROSA",
+    "#A6B8E8": "AZUL",
+    "#A9C6A5": "VERDE",
+    "#D9BD8C": "AMARILLO",
+    "#B9A2D8": "LILA"
+};
 
 const pantallaColores = document.getElementById("ritual-colores");
 const circuloColor = document.getElementById("circulo-color");
@@ -719,10 +769,19 @@ const opcionesColor = document.querySelectorAll(".color-opcion");
 // ELEGIR COLOR
 
 opcionesColor.forEach((opcion) => {
+
     opcion.addEventListener("click", () => {
+
         colorSeleccionado = opcion.dataset.color;
 
+        const nombre = nombresColores[colorSeleccionado];
+
         circuloColor.style.background = colorSeleccionado;
+
+        nombreColor.textContent = nombre;
+
+        textoColores.textContent =
+            `Concéntrate en el color ${nombre.toLowerCase()}.`;
 
         opcionesColor.forEach((elemento) => {
             elemento.classList.remove("seleccionado");
@@ -730,10 +789,29 @@ opcionesColor.forEach((opcion) => {
 
         opcion.classList.add("seleccionado");
 
-        textoColores.textContent = "Ahora cubre la cámara con tu dedo.";
         mensajeColores.textContent =
-            "El círculo crecerá mientras cubres la cámara.";
+            "Ahora cubre y descubre la cámara para hacerlo crecer.";
+
     });
+
+});
+
+// ELEGIR CÁMARA
+
+botonesCamara.forEach((boton) => {
+
+    boton.addEventListener("click", () => {
+
+        camaraElegida = boton.dataset.camara;
+
+        botonesCamara.forEach((elemento) => {
+            elemento.classList.remove("seleccionado");
+        });
+
+        boton.classList.add("seleccionado");
+
+    });
+
 });
 
 
@@ -756,6 +834,7 @@ function reiniciarColores() {
         "Cuando estés lista, cubre la cámara con tu dedo.";
 
     botonCamaraColores.hidden = false;
+    selectorCamaraColores.hidden = false;
     botonCamaraColores.disabled = false;
     botonCamaraColores.textContent = "Activar cámara";
 
@@ -773,7 +852,9 @@ async function activarCamaraColores() {
         flujoCamaraColores =
             await navigator.mediaDevices.getUserMedia({
                 video: {
-                    facingMode: { ideal: "environment" }
+                facingMode: { ideal: camaraElegida },
+                width: { ideal: 640 },
+                height: { ideal: 480 }
                 },
                 audio: false
             });
@@ -789,6 +870,8 @@ async function activarCamaraColores() {
 
         botonCamaraColores.hidden = true;
 
+        selectorCamaraColores.hidden = true;
+
         textoColores.textContent =
             "Cubre la cámara con tu dedo.";
 
@@ -798,6 +881,9 @@ async function activarCamaraColores() {
         detectarCoberturaCamara();
 
     } catch (error) {
+
+        selectorCamaraColores.hidden = false;
+        botonCamaraColores.hidden = false;
         mensajeColores.textContent =
             "No pudimos activar la cámara. Revisa los permisos y vuelve a intentarlo.";
 
@@ -885,7 +971,7 @@ function detectarCoberturaCamara() {
 }
 
 
-// ACTUALIZAR EL TAMAÑO DEL CÍRCULO
+// ACTUALIZAR EL TAMAÑO DEL CÍRCULO Y SU NOMBRE
 
 function actualizarCirculoColor() {
 
@@ -893,6 +979,9 @@ function actualizarCirculoColor() {
 
     circuloColor.style.transform =
         `scale(${escala})`;
+
+    // El nombre crece junto con el círculo.
+    nombreColor.style.opacity = progresoColor > 0 ? "1" : "0";
 }
 
 // COMPLETAR RITUAL

@@ -1548,3 +1548,71 @@ body {
 .boton-dormir[hidden] {
     display: none;
 }
+
+/* =================================
+   MEJORAS: RITUAL DE COLORES
+================================= */
+
+.selector-camara {
+    width: 100%;
+    text-align: center;
+    margin: 8px 0;
+    z-index: 3;
+}
+
+.selector-camara p {
+    color: #d5cfe5;
+    font-size: 13px;
+    margin-bottom: 12px;
+}
+
+.opciones-camara {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.boton-camara {
+    padding: 10px 15px;
+    border: 1px solid #8e91ad;
+    border-radius: 25px;
+    background: transparent;
+    color: #eeeaf5;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.boton-camara.seleccionado {
+    background: #d9c9ae;
+    color: #20283b;
+    border-color: #d9c9ae;
+}
+
+/* NOMBRE DEL COLOR DENTRO DEL CÍRCULO */
+
+.circulo-color {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    will-change: transform;
+}
+
+#nombre-color {
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: clamp(11px, 3vw, 17px);
+    font-weight: bold;
+    letter-spacing: 3px;
+    text-shadow: 0 2px 8px #0008;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+}
+
+/* OCULTAR SELECTOR CUANDO SE ACTIVA LA CÁMARA */
+
+.selector-camara[hidden] {
+    display: none;
+}
