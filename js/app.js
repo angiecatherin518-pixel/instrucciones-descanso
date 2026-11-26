@@ -701,8 +701,6 @@ async function prepararMicrofono() {
 
 // REINICIAR EL RITUAL
 
-function reiniciarRespiracion() {
-
     function reiniciarRespiracion() {
     detenerAudiosRespiracion();
 
@@ -883,7 +881,7 @@ function iniciarDeteccionSoplido() {
         audioExhalar.play().catch(error => console.log(error));
     }
 
-    textoRespiracion.textContent = "LISTO";
+    textoRespiracion.textContent = "LISTO";     
 
                     indicacionGesto.textContent =
                         "Ahora puedes soltar tu dedo.";
@@ -1024,7 +1022,6 @@ function cancelarRespiracion() {
 
 // COMPLETAR UNA RESPIRACIÓN
 
-function completarRespiracion() {
 
 function completarRespiracion() {
     detenerAudiosRespiracion();
