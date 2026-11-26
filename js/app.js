@@ -40,8 +40,8 @@ function actualizarReloj(forzarAlarma = false) {
 
     // El tiempo comienza lentamente y acelera progresivamente.
     const minutosAvanzados = Math.floor(
-        segundosTranscurridos * 0.1 +
-        (segundosTranscurridos * segundosTranscurridos) / 900
+        segundosTranscurridos * 0.20 +
+        (segundosTranscurridos * segundosTranscurridos) / 400
     );
 
     // El reloj no supera las 06:59 antes de la alarma.
