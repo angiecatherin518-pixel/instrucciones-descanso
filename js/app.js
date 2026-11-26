@@ -1962,6 +1962,8 @@ function cambiarPantalla(actual, siguiente) {
 
 function comenzarSueno() {
 
+    detenerSonidoRuido();
+
         // El reloj deja de sonar cuando la persona comienza a dormir.
     clearInterval(temporizadorFadeReloj);
 
