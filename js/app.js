@@ -1824,7 +1824,6 @@ function comenzarSueno() {
     narracionSueno.textContent = "";
     ultimoPensamientoSueno.hidden = true;
     mensajeSueno.hidden = true;
-    textoSuenoSecundario.hidden = true;
     zzzSueno.hidden = true;
 
     // Mostrar la escena del cielo y comenzar la narración.
@@ -1847,10 +1846,8 @@ function comenzarSueno() {
     temporizadorNarracion.push(setTimeout(() => {
 
         mensajeSueno.hidden = false;
-        textoSuenoSecundario.hidden = false;
 
         mensajeSueno.classList.add("aparecer-sueno");
-        textoSuenoSecundario.classList.add("aparecer-sueno");
 
     }, 8500));
 
